@@ -1,3 +1,21 @@
+.alert {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: green;
+  padding: 5px 15px;
+  border-radius: 4px;
+  z-index: 1;
+  width: 80%;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 500;
+  min-height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 form {
   max-width: 400px;
   width: 100%;
@@ -50,18 +68,28 @@ form {
     &:nth-child(4n) {
       margin-right: 0;
     }
-    .title {
-      font-size: 20px;
+    div {
       margin-bottom: 10px;
       text-align: center;
     }
+    .title {
+      font-size: 20px;
+      font-weight: 500;
+      text-transform: capitalize;
+    }
     .sub-title {
       font-size: 16px;
-      text-align: center;
+      color: #777;
+    }
+    .price {
+      font-size: 18px;
+      font-weight: 500;
+      color: #1a1a1a;
     }
     img {
       width: 100%;
       width: 170px;
+      height: 170px;
       margin: 0 auto 20px;
       display: flex;
       object-fit: contain;

@@ -1,9 +1,17 @@
 .header-wrapper {
-  height: 60px;
-  padding: 0 15px;
+  min-height: 60px;
+  padding: 15px 30px;
   display: flex;
   align-items: center;
-  img {
+  position: sticky;
+  top: 0;
+  background: #fff;
+  .logo{
+    font-size: 30px;
+    color: #1a1a1a;
+    font-weight: 600;
+    img {
+    }
   }
   .right {
     margin-left: auto;

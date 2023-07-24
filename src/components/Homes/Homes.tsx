@@ -4,20 +4,28 @@ import './Homes.scss';
 import axios from 'axios';
 import Image from 'next/image';
 import Header from '../Header/Header';
+import { useRouter } from 'next/navigation';
 
 const Homes = () => {
+  const router = useRouter();
+
   const [fileInput, setFileInput] = useState<any>('');
   const [inputValue, setInputValue] = useState<any>({
     product_img: fileInput,
     product_title: '',
     product_subtitle: '',
+    product_price: '',
   });
 
   const [productData, setProductData] = useState([]);
 
   const [cartData, setCartData] = useState([]);
 
-  const [cartFlag, setCartFlag] = useState(false);
+  const [loader, setLoader] = useState(false);
+
+  const [alert, setAlert] = useState(false);
+
+  const userToken = localStorage.getItem('user-token');
 
   const convertBase64 = (file: any) => {
     return new Promise((resolve, reject) => {
@@ -62,6 +70,7 @@ const Homes = () => {
       product_img: '',
       product_title: '',
       product_subtitle: '',
+      product_price: '',
     });
   };
 
@@ -76,36 +85,60 @@ const Homes = () => {
   }, []);
 
   const handleProductClick = async (id: any) => {
-    setCartFlag(false);
-    await axios
-      .get(`http://localhost:3001/product/${id}`)
-      .then(
-        async (res) => await axios.post('http://localhost:3001/cart', res.data)
-      )
-      .then((res) => {
-        if (res) {
-          setCartFlag(true);
-        }
-      });
+    // if (userToken) {
+    setLoader(true);
+    await axios.get(`http://localhost:3001/product/${id}`).then(async (res) => {
+      if (res) {
+        await axios.post('http://localhost:3001/cart', {
+          ...res.data,
+          quantity: 1,
+        });
 
-    // await axios.post('http://localhost:3001/cart', singleProduct.data);
+        // if (cartData.map((e: any) => e?.id === id)) {
+        //   await axios.post(`http://localhost:3001/product/${id}`, {
+        //     ...res?.data,
+        //     clicked: 'clicked',
+        //   });
+        // }
+
+        setLoader(false);
+      }
+    });
+    setTimeout(() => {
+      setAlert(true);
+      const time = setTimeout(() => {
+        setAlert(false);
+      }, 5000);
+      return () => {
+        clearTimeout(time);
+      };
+    }, 500);
+    // } else {
+    //   router.push('/userlogin');
+    // }
   };
 
   useEffect(() => {
     const cartProductData = async () => {
-      const cartProduct = await axios
-        .get('http://localhost:3001/cart')
-        .then((res) => {
-          setCartData(res.data);
-        });
+      await axios.get('http://localhost:3001/cart').then((res) => {
+        setCartData(res.data);
+      });
     };
 
     cartProductData();
-  }, [cartFlag]);
+  }, [loader]);
+
+  console.log('productData', productData, cartData);
 
   return (
     <>
-      <Header cartData={cartData} />
+      {alert && <div className='alert'>Add Successfully!</div>}
+      <Header
+        cartData={cartData}
+        setCartData={setCartData}
+        setLoader={setLoader}
+        loader={loader}
+      />
       <form onSubmit={handleSubmit}>
         <div className='block-input'>
           <input
@@ -134,6 +167,15 @@ const Homes = () => {
           />
         </div>
         <div className='block-input'>
+          <input
+            type='number'
+            name='product_price'
+            placeholder='Product Price'
+            onChange={handleChange}
+            value={inputValue?.product_price}
+          />
+        </div>
+        <div className='block-input'>
           <button type='submit'>Submit</button>
         </div>
       </form>
@@ -148,6 +190,9 @@ const Homes = () => {
             />
             <div className='title'>{item?.product_title}</div>
             <div className='sub-title'>{item?.product_subtitle}</div>
+            {item?.product_price && (
+              <div className='price'>$ {item?.product_price}</div>
+            )}
             <button onClick={() => handleProductClick(item?.id)}>Buy</button>
           </div>
         ))}
