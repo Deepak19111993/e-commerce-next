@@ -40,6 +40,13 @@ const CartDrawer = ({
   const handleDelete = async (id: any) => {
     setLoader(true);
     await axios.delete(`http://localhost:3001/cart/${id}`);
+    await axios.get(`http://localhost:3001/product/${id}`).then(
+      async (res) =>
+        await axios.put(`http://localhost:3001/product/${id}`, {
+          ...res?.data,
+          count: 0,
+        })
+    );
     setLoader(false);
   };
 

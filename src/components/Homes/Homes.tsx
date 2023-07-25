@@ -17,7 +17,7 @@ const Homes = () => {
     product_price: '',
   });
 
-  const [productData, setProductData] = useState([]);
+  const [productData, setProductData] = useState<any>([]);
 
   const [cartData, setCartData] = useState([]);
 
@@ -62,6 +62,7 @@ const Homes = () => {
     postProduct({
       ...inputValue,
       product_img: fileInput,
+      count: 0,
     });
     setTimeout(() => {
       fetchData();
@@ -75,53 +76,56 @@ const Homes = () => {
   };
 
   const fetchData = async () => {
-    const data = await axios.get('http://localhost:3001/product');
-    setProductData(data.data);
-    console.log('data', data.data);
+    await axios
+      .get('http://localhost:3001/product')
+      .then((res) => setProductData(res?.data));
   };
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [loader]);
 
   const handleProductClick = async (id: any) => {
-    // if (userToken) {
-    setLoader(true);
-    await axios.get(`http://localhost:3001/product/${id}`).then(async (res) => {
-      if (res) {
-        await axios.post('http://localhost:3001/cart', {
-          ...res.data,
-          quantity: 1,
+    if (userToken) {
+      setLoader(true);
+      await axios
+        .get(`http://localhost:3001/product/${id}`)
+        .then(async (res) => {
+          if (res) {
+            await axios.post('http://localhost:3001/cart', {
+              ...res.data,
+              quantity: 1,
+            });
+            setLoader(false);
+            if (id) {
+              await axios.put(`http://localhost:3001/product/${id}`, {
+                ...res?.data,
+                count: 1,
+              });
+            }
+          }
         });
 
-        // if (cartData.map((e: any) => e?.id === id)) {
-        //   await axios.post(`http://localhost:3001/product/${id}`, {
-        //     ...res?.data,
-        //     clicked: 'clicked',
-        //   });
-        // }
-
-        setLoader(false);
-      }
-    });
-    setTimeout(() => {
-      setAlert(true);
-      const time = setTimeout(() => {
-        setAlert(false);
-      }, 5000);
-      return () => {
-        clearTimeout(time);
-      };
-    }, 500);
-    // } else {
-    //   router.push('/userlogin');
-    // }
+      setTimeout(() => {
+        setAlert(true);
+        const time = setTimeout(() => {
+          setAlert(false);
+        }, 5000);
+        return () => {
+          clearTimeout(time);
+        };
+      }, 500);
+    } else {
+      router.push('/usersignup');
+    }
   };
 
   useEffect(() => {
     const cartProductData = async () => {
       await axios.get('http://localhost:3001/cart').then((res) => {
-        setCartData(res.data);
+        if (res) {
+          setCartData(res.data);
+        }
       });
     };
 
@@ -181,7 +185,10 @@ const Homes = () => {
       </form>
       <div className='product-wrapper'>
         {productData.map((item: any) => (
-          <div key={item?.id} className='item'>
+          <div
+            key={item?.id}
+            className={`item ${item?.count === 1 && userToken ? 'added' : ''}`}
+          >
             <Image
               src={item?.product_img}
               width={250}
@@ -193,7 +200,9 @@ const Homes = () => {
             {item?.product_price && (
               <div className='price'>$ {item?.product_price}</div>
             )}
-            <button onClick={() => handleProductClick(item?.id)}>Buy</button>
+            <button onClick={() => handleProductClick(item?.id)}>
+              {item?.count === 1 && userToken ? 'Added' : 'Buy'}
+            </button>
           </div>
         ))}
       </div>
