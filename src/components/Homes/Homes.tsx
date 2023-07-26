@@ -81,9 +81,47 @@ const Homes = () => {
       .then((res) => setProductData(res?.data));
   };
 
+  const afterLogoutProductData = async () => {
+    if (!userToken) {
+      await axios.get('http://localhost:3001/product').then(async (res) =>
+        res?.data?.map(
+          async (e: any) =>
+            await axios.put(`http://localhost:3001/product/${e?.id}`, {
+              ...e,
+              count: 0,
+            })
+        )
+      );
+    } else {
+      if (cartData?.length) {
+        const product_data = await axios
+          .get(`http://localhost:3001/product`)
+          .then((res) => res?.data);
+        const cart_data = await axios
+          .get(`http://localhost:3001/cart`)
+          .then((res) =>
+            res?.data.filter((e: any) => e?.userName === userToken)
+          );
+        const new_data = product_data?.map((e: any) =>
+          cart_data?.map((e: any) => e?.id)?.includes(e?.id)
+            ? { ...e, count: 1 }
+            : { ...e, count: 0 }
+        );
+        setProductData(new_data);
+        console.log('new_data', new_data, cart_data);
+      }
+    }
+  };
+
+  useEffect(() => {
+    afterLogoutProductData();
+  }, [loader, userToken, cartData]);
+
   useEffect(() => {
     fetchData();
   }, [loader]);
+
+  console.log('userToken', userToken);
 
   const handleProductClick = async (id: any) => {
     if (userToken) {
@@ -95,16 +133,16 @@ const Homes = () => {
             await axios.post('http://localhost:3001/cart', {
               ...res.data,
               quantity: 1,
+              userName: userToken,
             });
-            setLoader(false);
-            if (id) {
-              await axios.put(`http://localhost:3001/product/${id}`, {
-                ...res?.data,
-                count: 1,
-              });
-            }
+
+            await axios.put(`http://localhost:3001/product/${id}`, {
+              ...res?.data,
+              count: 1,
+            });
           }
         });
+      setLoader(false);
 
       setTimeout(() => {
         setAlert(true);
@@ -124,7 +162,10 @@ const Homes = () => {
     const cartProductData = async () => {
       await axios.get('http://localhost:3001/cart').then((res) => {
         if (res) {
-          setCartData(res.data);
+          const newCart = res?.data?.filter(
+            (e: any) => e?.userName === userToken
+          );
+          setCartData(newCart);
         }
       });
     };

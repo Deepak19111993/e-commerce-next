@@ -19,6 +19,10 @@ const CartDrawer = ({
           ...res?.data,
           quantity: res?.data?.quantity <= 1 ? 1 : res?.data?.quantity - 1,
         });
+        await axios.put(`http://localhost:3001/product/${id}`, {
+          ...res?.data,
+          count: 1,
+        });
         setLoader(false);
       }
     });
@@ -31,6 +35,10 @@ const CartDrawer = ({
         await axios.put(`http://localhost:3001/cart/${id}`, {
           ...res?.data,
           quantity: res?.data?.quantity + 1,
+        });
+        await axios.put(`http://localhost:3001/product/${id}`, {
+          ...res?.data,
+          count: 1,
         });
         setLoader(false);
       }

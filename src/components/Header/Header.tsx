@@ -14,25 +14,28 @@ const Header = ({ cartData, setCartData, setLoader, loader }: any) => {
 
   console.log('cartData', cartData);
 
-  const logout = () => {
+  const logout = async () => {
     localStorage.clear();
     // router.push('/home');
-    if(window !== undefined){
+
+    if (window !== undefined) {
       window.location.replace('/home');
     }
-  }
+  };
 
   return (
     <>
       <div className='header-wrapper'>
         {/* <Image src='' alt='logo' width={50} height={50} /> */}
         <div className='logo'>Logo</div>
-        {userToken && <ul className='right'>
-          <li onClick={() => setOpenDrawer(true)}>
-            Cart <span className='count'>{cartData?.length}</span>
-          </li>
-          <li onClick={logout}>Log Out</li>
-        </ul>}
+        {userToken && (
+          <ul className='right'>
+            <li onClick={() => setOpenDrawer(true)}>
+              Cart <span className='count'>{cartData?.length}</span>
+            </li>
+            <li onClick={logout}>Log Out</li>
+          </ul>
+        )}
       </div>
       <CartDrawer
         openDrawer={openDrawer}
