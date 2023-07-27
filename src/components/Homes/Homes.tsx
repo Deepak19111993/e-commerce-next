@@ -142,6 +142,19 @@ const Homes = () => {
             });
           }
         });
+      const product_data = await axios
+        .get(`http://localhost:3001/product`)
+        .then((res) => res?.data);
+      const cart_data = await axios
+        .get(`http://localhost:3001/cart`)
+        .then((res) => res?.data.filter((e: any) => e?.userName === userToken));
+      const new_data = product_data?.map((e: any) =>
+        cart_data?.map((e: any) => e?.id)?.includes(e?.id)
+          ? { ...e, count: 1 }
+          : { ...e, count: 0 }
+      );
+      console.log('new_data----', new_data);
+
       setLoader(false);
 
       setTimeout(() => {
