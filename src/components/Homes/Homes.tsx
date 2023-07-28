@@ -94,21 +94,21 @@ const Homes = () => {
       );
     } else {
       if (cartData?.length) {
-        const product_data = await axios
-          .get(`http://localhost:3001/product`)
-          .then((res) => res?.data);
-        const cart_data = await axios
-          .get(`http://localhost:3001/cart`)
-          .then((res) =>
-            res?.data.filter((e: any) => e?.userName === userToken)
-          );
-        const new_data = product_data?.map((e: any) =>
-          cart_data?.map((e: any) => e?.id)?.includes(e?.id)
-            ? { ...e, count: 1 }
-            : { ...e, count: 0 }
-        );
-        setProductData(new_data);
-        console.log('new_data', new_data, cart_data);
+        // const product_data = await axios
+        //   .get(`http://localhost:3001/product`)
+        //   .then((res) => res?.data);
+        // const cart_data = await axios
+        //   .get(`http://localhost:3001/cart`)
+        //   .then((res) =>
+        //     res?.data.filter((e: any) => e?.userName === userToken)
+        //   );
+        // const new_data = product_data?.map((e: any) =>
+        //   cart_data?.map((e: any) => e?.id)?.includes(e?.id)
+        //     ? { ...e, count: 1 }
+        //     : { ...e, count: 0 }
+        // );
+        // setProductData(new_data);
+        // console.log('new_data', new_data, cart_data);
       }
     }
   };
@@ -121,8 +121,6 @@ const Homes = () => {
     fetchData();
   }, [loader]);
 
-  console.log('userToken', userToken);
-
   const handleProductClick = async (id: any) => {
     if (userToken) {
       setLoader(true);
@@ -130,30 +128,41 @@ const Homes = () => {
         .get(`http://localhost:3001/product/${id}`)
         .then(async (res) => {
           if (res) {
-            await axios.post('http://localhost:3001/cart', {
-              ...res.data,
-              quantity: 1,
-              userName: userToken,
-            });
+            const singleUserCartData = await axios
+              .get('http://localhost:3001/signup')
+              .then((res) => res?.data);
 
-            await axios.put(`http://localhost:3001/product/${id}`, {
-              ...res?.data,
-              count: 1,
-            });
+            let indexData = singleUserCartData?.filter(
+              (e: any) => e?.userName === userToken
+            )[0]?.id;
+
+            console.log('indexData', indexData, singleUserCartData);
+
+            const getUserSingle = await axios
+              .get(`http://localhost:3001/signup/${indexData}`)
+              .then((res) => res?.data);
+
+            if (!getUserSingle?.cart.map((e: any) => e?.id).includes(id)) {
+              const cartPut = await axios.put(
+                `http://localhost:3001/signup/${indexData}`,
+                {
+                  ...getUserSingle,
+                  cart: [
+                    ...getUserSingle.cart,
+                    {
+                      ...res?.data,
+                      quantity: 1,
+                      userName: userToken,
+                      count: 1,
+                    },
+                  ],
+                }
+              );
+              setCartData(cartPut?.data?.cart);
+              // axios.put(`http://localhost:3001/product/${id}`).then((res) => {...res?.data, count: 1});
+            }
           }
         });
-      const product_data = await axios
-        .get(`http://localhost:3001/product`)
-        .then((res) => res?.data);
-      const cart_data = await axios
-        .get(`http://localhost:3001/cart`)
-        .then((res) => res?.data.filter((e: any) => e?.userName === userToken));
-      const new_data = product_data?.map((e: any) =>
-        cart_data?.map((e: any) => e?.id)?.includes(e?.id)
-          ? { ...e, count: 1 }
-          : { ...e, count: 0 }
-      );
-      console.log('new_data----', new_data);
 
       setLoader(false);
 
@@ -173,14 +182,20 @@ const Homes = () => {
 
   useEffect(() => {
     const cartProductData = async () => {
-      await axios.get('http://localhost:3001/cart').then((res) => {
-        if (res) {
-          const newCart = res?.data?.filter(
-            (e: any) => e?.userName === userToken
-          );
-          setCartData(newCart);
-        }
-      });
+      const singleUserCartData = await axios
+        .get('http://localhost:3001/signup')
+        .then((res) => res?.data);
+
+      let indexData = singleUserCartData?.filter(
+        (e: any) => e?.userName === userToken
+      )[0]?.id;
+      await axios
+        .get(`http://localhost:3001/signup/${indexData}`)
+        .then((res) => {
+          if (res) {
+            setCartData(res?.data?.cart);
+          }
+        });
     };
 
     cartProductData();
@@ -241,7 +256,9 @@ const Homes = () => {
         {productData.map((item: any) => (
           <div
             key={item?.id}
-            className={`item ${item?.count === 1 && userToken ? 'added' : ''}`}
+            className={`item ${cartData.map((e: any) =>
+              e?.id === item?.id ? 'added' : ''
+            )}`}
           >
             <Image
               src={item?.product_img}

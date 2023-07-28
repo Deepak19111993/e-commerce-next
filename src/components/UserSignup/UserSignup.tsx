@@ -24,7 +24,7 @@ const UserSignup = () => {
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     setUserSignup([...userSignup, user]);
-    await axios.post(`http://localhost:3001/signup`, user);
+    await axios.post(`http://localhost:3001/signup`, { ...user, cart: [] });
     setUser({
       userName: '',
       name: '',

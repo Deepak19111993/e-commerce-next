@@ -12,51 +12,53 @@ const CartDrawer = ({
   loader,
 }: any) => {
   const decrease = async (id: any) => {
-    setLoader(true);
-    await axios.get(`http://localhost:3001/cart/${id}`).then(async (res) => {
-      if (res) {
-        await axios.put(`http://localhost:3001/cart/${id}`, {
-          ...res?.data,
-          quantity: res?.data?.quantity <= 1 ? 1 : res?.data?.quantity - 1,
-        });
-        await axios.put(`http://localhost:3001/product/${id}`, {
-          ...res?.data,
-          count: 1,
-        });
-        setLoader(false);
-      }
-    });
+    // setLoader(true);
+    // await axios.get(`http://localhost:3001/cart/${id}`).then(async (res) => {
+    //   if (res) {
+    //     await axios.put(`http://localhost:3001/cart/${id}`, {
+    //       ...res?.data,
+    //       quantity: res?.data?.quantity <= 1 ? 1 : res?.data?.quantity - 1,
+    //     });
+    //     await axios.put(`http://localhost:3001/product/${id}`, {
+    //       ...res?.data,
+    //       count: 1,
+    //     });
+    //     setLoader(false);
+    //   }
+    // });
   };
 
   const increase = async (id: any) => {
-    setLoader(true);
-    await axios.get(`http://localhost:3001/cart/${id}`).then(async (res) => {
-      if (res) {
-        await axios.put(`http://localhost:3001/cart/${id}`, {
-          ...res?.data,
-          quantity: res?.data?.quantity + 1,
-        });
-        await axios.put(`http://localhost:3001/product/${id}`, {
-          ...res?.data,
-          count: 1,
-        });
-        setLoader(false);
-      }
-    });
+    // setLoader(true);
+    // await axios.get(`http://localhost:3001/cart/${id}`).then(async (res) => {
+    //   if (res) {
+    //     await axios.put(`http://localhost:3001/cart/${id}`, {
+    //       ...res?.data,
+    //       quantity: res?.data?.quantity + 1,
+    //     });
+    //     await axios.put(`http://localhost:3001/product/${id}`, {
+    //       ...res?.data,
+    //       count: 1,
+    //     });
+    //     setLoader(false);
+    //   }
+    // });
   };
 
   const handleDelete = async (id: any) => {
-    setLoader(true);
-    await axios.delete(`http://localhost:3001/cart/${id}`);
-    await axios.get(`http://localhost:3001/product/${id}`).then(
-      async (res) =>
-        await axios.put(`http://localhost:3001/product/${id}`, {
-          ...res?.data,
-          count: 0,
-        })
-    );
-    setLoader(false);
+    // setLoader(true);
+    // await axios.delete(`http://localhost:3001/cart/${id}`);
+    // await axios.get(`http://localhost:3001/product/${id}`).then(
+    //   async (res) =>
+    //     await axios.put(`http://localhost:3001/product/${id}`, {
+    //       ...res?.data,
+    //       count: 0,
+    //     })
+    // );
+    // setLoader(false);
   };
+
+  console.log('cartData==========', cartData);
 
   return (
     <div className={`cart-wrapper ${openDrawer ? 'open' : ''}`}>
@@ -70,7 +72,7 @@ const CartDrawer = ({
         {cartData?.length > 0 ? (
           <div className='cart-item-wrapper'>
             {cartData.map((item: any) => (
-              <div key={item?.id} className='item'>
+              <div key={item?.uuid} className='item'>
                 <Image
                   src={item?.product_img}
                   alt='product-images'
