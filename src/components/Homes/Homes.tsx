@@ -25,6 +25,8 @@ const Homes = () => {
 
   const [alert, setAlert] = useState(false);
 
+  const [imgName, setImageName] = useState(null);
+
   const userToken = localStorage.getItem('user-token');
 
   const convertBase64 = (file: any) => {
@@ -48,6 +50,9 @@ const Homes = () => {
     const file = e.target.files[0];
 
     const base64 = await convertBase64(file);
+
+    setImageName(file?.name);
+    
 
     setFileInput(base64);
   };
@@ -73,6 +78,15 @@ const Homes = () => {
       product_subtitle: '',
       product_price: '',
     });
+    setTimeout(() => {
+      setAlert(true);
+      const time = setTimeout(() => {
+        setAlert(false);
+      }, 3000);
+      return () => {
+        clearTimeout(time);
+      };
+    }, 500);
   };
 
   const fetchData = async () => {
@@ -80,42 +94,6 @@ const Homes = () => {
       .get('http://localhost:3001/product')
       .then((res) => setProductData(res?.data));
   };
-
-  const afterLogoutProductData = async () => {
-    if (!userToken) {
-      await axios.get('http://localhost:3001/product').then(async (res) =>
-        res?.data?.map(
-          async (e: any) =>
-            await axios.put(`http://localhost:3001/product/${e?.id}`, {
-              ...e,
-              count: 0,
-            })
-        )
-      );
-    } else {
-      if (cartData?.length) {
-        // const product_data = await axios
-        //   .get(`http://localhost:3001/product`)
-        //   .then((res) => res?.data);
-        // const cart_data = await axios
-        //   .get(`http://localhost:3001/cart`)
-        //   .then((res) =>
-        //     res?.data.filter((e: any) => e?.userName === userToken)
-        //   );
-        // const new_data = product_data?.map((e: any) =>
-        //   cart_data?.map((e: any) => e?.id)?.includes(e?.id)
-        //     ? { ...e, count: 1 }
-        //     : { ...e, count: 0 }
-        // );
-        // setProductData(new_data);
-        // console.log('new_data', new_data, cart_data);
-      }
-    }
-  };
-
-  useEffect(() => {
-    afterLogoutProductData();
-  }, [loader, userToken, cartData]);
 
   useEffect(() => {
     fetchData();
@@ -159,29 +137,31 @@ const Homes = () => {
                 }
               );
               setCartData(cartPut?.data?.cart);
-              // axios.put(`http://localhost:3001/product/${id}`).then((res) => {...res?.data, count: 1});
+
+              setTimeout(() => {
+                setAlert(true);
+                const time = setTimeout(() => {
+                  setAlert(false);
+                }, 3000);
+                return () => {
+                  clearTimeout(time);
+                };
+              }, 500);
             }
           }
         });
 
       setLoader(false);
 
-      setTimeout(() => {
-        setAlert(true);
-        const time = setTimeout(() => {
-          setAlert(false);
-        }, 5000);
-        return () => {
-          clearTimeout(time);
-        };
-      }, 500);
     } else {
       router.push('/usersignup');
     }
   };
 
-  useEffect(() => {
+  useEffect(() => {    
     const cartProductData = async () => {
+      if(userToken){
+
       const singleUserCartData = await axios
         .get('http://localhost:3001/signup')
         .then((res) => res?.data);
@@ -189,6 +169,7 @@ const Homes = () => {
       let indexData = singleUserCartData?.filter(
         (e: any) => e?.userName === userToken
       )[0]?.id;
+
       await axios
         .get(`http://localhost:3001/signup/${indexData}`)
         .then((res) => {
@@ -196,8 +177,8 @@ const Homes = () => {
             setCartData(res?.data?.cart);
           }
         });
+      }
     };
-
     cartProductData();
   }, [loader]);
 
@@ -212,7 +193,11 @@ const Homes = () => {
         setLoader={setLoader}
         loader={loader}
       />
+      <div className='wrapper'>
       <form onSubmit={handleSubmit}>
+        <div className='block-input'>
+          <h2>Add Product</h2>
+        </div>
         <div className='block-input'>
           <input
             type='file'
@@ -220,6 +205,8 @@ const Homes = () => {
             onChange={handleChange}
             value={inputValue?.product_img}
           />
+          <div className='upload'>upload</div>
+          <div className='img-name'>{imgName}</div>
         </div>
         <div className='block-input'>
           <input
@@ -256,9 +243,7 @@ const Homes = () => {
         {productData.map((item: any) => (
           <div
             key={item?.id}
-            className={`item ${cartData.map((e: any) =>
-              e?.id === item?.id ? 'added' : ''
-            )}`}
+            className={`item ${cartData?.map((e:any) => e?.id).includes(item?.id) ? "added" : ""}`}
           >
             <Image
               src={item?.product_img}
@@ -272,10 +257,11 @@ const Homes = () => {
               <div className='price'>$ {item?.product_price}</div>
             )}
             <button onClick={() => handleProductClick(item?.id)}>
-              {item?.count === 1 && userToken ? 'Added' : 'Buy'}
+              {cartData?.map((e:any) => e?.id).includes(item?.id) ? "Added" : "Buy"}
             </button>
           </div>
         ))}
+      </div>
       </div>
     </>
   );

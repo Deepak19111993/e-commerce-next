@@ -15,27 +15,42 @@ const Header = ({ cartData, setCartData, setLoader, loader }: any) => {
   console.log('cartData', cartData);
 
   const logout = async () => {
+    // setLoader(true);
     localStorage.clear();
     // router.push('/home');
 
     if (window !== undefined) {
       window.location.replace('/home');
     }
+    // setLoader(false);
   };
+
+  const login = () => {
+    router.push('/login');
+  }
 
   return (
     <>
       <div className='header-wrapper'>
         {/* <Image src='' alt='logo' width={50} height={50} /> */}
         <div className='logo'>Logo</div>
-        {userToken && (
+        {userToken ? (
           <ul className='right'>
+            <li>user: {userToken}</li>
             <li onClick={() => setOpenDrawer(true)}>
               Cart <span className='count'>{cartData?.length}</span>
             </li>
             <li onClick={logout}>Log Out</li>
           </ul>
-        )}
+        ) : 
+        <ul className='right'>
+          {/* <li>user: {userToken}</li> */}
+          {/* <li onClick={() => setOpenDrawer(true)}>
+            Cart <span className='count'>{cartData?.length}</span>
+          </li> */}
+          <li onClick={login}>Log In</li>
+        </ul>
+        }
       </div>
       <CartDrawer
         openDrawer={openDrawer}
@@ -44,6 +59,7 @@ const Header = ({ cartData, setCartData, setLoader, loader }: any) => {
         setCartData={setCartData}
         setLoader={setLoader}
         loader={loader}
+        onClickOutside={() => setOpenDrawer(false)}
       />
     </>
   );

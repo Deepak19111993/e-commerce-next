@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState , useRef} from 'react';
 import './CartDrawer.scss';
 import Image from 'next/image';
 import axios from 'axios';
@@ -10,58 +10,136 @@ const CartDrawer = ({
   setOpenDrawer,
   setLoader,
   loader,
+  onClickOutside
 }: any) => {
+
+  const userToken = localStorage.getItem('user-token');
+
+  const [totalCart, setTotalCart] = useState(0);
+
+  const cartRef = useRef(null);
+
   const decrease = async (id: any) => {
-    // setLoader(true);
-    // await axios.get(`http://localhost:3001/cart/${id}`).then(async (res) => {
-    //   if (res) {
-    //     await axios.put(`http://localhost:3001/cart/${id}`, {
-    //       ...res?.data,
-    //       quantity: res?.data?.quantity <= 1 ? 1 : res?.data?.quantity - 1,
-    //     });
-    //     await axios.put(`http://localhost:3001/product/${id}`, {
-    //       ...res?.data,
-    //       count: 1,
-    //     });
-    //     setLoader(false);
-    //   }
-    // });
+    setLoader(true);
+    const singleUserCartData = await axios
+    .get('http://localhost:3001/signup')
+    .then((res) => res?.data);
+
+    let indexData = singleUserCartData?.filter(
+      (e: any) => e?.userName === userToken)[0]?.id;
+
+    
+    const getUserSingle = await axios
+    .get(`http://localhost:3001/signup/${indexData}`)
+    .then((res) => res?.data);
+
+    
+    console.log('indexData', indexData, singleUserCartData,getUserSingle?.cart.map((e: any) => e?.id === id), id);
+
+     await axios.put(
+        `http://localhost:3001/signup/${indexData}`,
+        {
+          ...getUserSingle,
+          cart: 
+            // ...getUserSingle?.cart,
+            getUserSingle?.cart.map((e: any) => e?.id === id ? {...e, quantity: e?.quantity <= 1 ? 1 : e?.quantity - 1} : {...e})
+          
+        }
+      );
+      setLoader(false);
   };
 
   const increase = async (id: any) => {
-    // setLoader(true);
-    // await axios.get(`http://localhost:3001/cart/${id}`).then(async (res) => {
-    //   if (res) {
-    //     await axios.put(`http://localhost:3001/cart/${id}`, {
-    //       ...res?.data,
-    //       quantity: res?.data?.quantity + 1,
-    //     });
-    //     await axios.put(`http://localhost:3001/product/${id}`, {
-    //       ...res?.data,
-    //       count: 1,
-    //     });
-    //     setLoader(false);
-    //   }
-    // });
+    setLoader(true);
+    const singleUserCartData = await axios
+    .get('http://localhost:3001/signup')
+    .then((res) => res?.data);
+
+    let indexData = singleUserCartData?.filter(
+      (e: any) => e?.userName === userToken)[0]?.id;
+
+    
+    const getUserSingle = await axios
+    .get(`http://localhost:3001/signup/${indexData}`)
+    .then((res) => res?.data);
+
+    
+    console.log('indexData', indexData, singleUserCartData,getUserSingle?.cart.map((e: any) => e?.id === id), id);
+
+     await axios.put(
+        `http://localhost:3001/signup/${indexData}`,
+        {
+          ...getUserSingle,
+          cart: 
+            // ...getUserSingle?.cart,
+            getUserSingle?.cart.map((e: any) => e?.id === id ? {...e, quantity: e?.quantity + 1} : {...e})
+          
+        }
+      );
+      setLoader(false);
   };
 
   const handleDelete = async (id: any) => {
-    // setLoader(true);
-    // await axios.delete(`http://localhost:3001/cart/${id}`);
-    // await axios.get(`http://localhost:3001/product/${id}`).then(
-    //   async (res) =>
-    //     await axios.put(`http://localhost:3001/product/${id}`, {
-    //       ...res?.data,
-    //       count: 0,
-    //     })
-    // );
-    // setLoader(false);
+    setLoader(true);
+    const singleUserCartData = await axios
+    .get('http://localhost:3001/signup')
+    .then((res) => res?.data);
+
+    let indexData = singleUserCartData?.filter(
+      (e: any) => e?.userName === userToken)[0]?.id;
+
+    
+    const getUserSingle = await axios
+    .get(`http://localhost:3001/signup/${indexData}`)
+    .then((res) => res?.data);
+
+    
+    console.log('indexData', indexData, singleUserCartData,getUserSingle?.cart[id]);
+
+     await axios.put(
+        `http://localhost:3001/signup/${indexData}`,
+        {
+          ...getUserSingle,
+          cart: getUserSingle?.cart.filter((e:any) => e?.id !== id),
+        }
+      );
+      setLoader(false);
   };
+
+  const getTotal = () => {
+      const total = cartData?.map((e:any, i:any) => {
+        const sum = Number(e?.product_price) * Number(e?.quantity);
+        return sum;
+      })
+      let cartTotal = 0;
+
+      total.forEach( (e:any) => {
+        cartTotal += e;
+      })
+
+      setTotalCart(cartTotal);
+    }
+  useEffect(() => {
+    getTotal();
+  },[cartData, userToken])
 
   console.log('cartData==========', cartData);
 
+  useEffect(() => {
+    const handleClickOutside = (e:any) => {
+      if (cartRef.current && !cartRef.current.contains(e.target)) {
+        onClickOutside && onClickOutside();
+      }
+    };
+    document.addEventListener('click', handleClickOutside);
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, [ onClickOutside ]);
+
+
   return (
-    <div className={`cart-wrapper ${openDrawer ? 'open' : ''}`}>
+    <div className={`cart-wrapper ${openDrawer ? 'open' : ''}`} ref={cartRef}>
       <div className='header'>
         <h2 className='title'>Cart</h2>
         <div className='icon' onClick={() => setOpenDrawer(false)}>
@@ -102,6 +180,10 @@ const CartDrawer = ({
         )}
       </div>
       <div className='footer'>
+        <div className="total">
+          <span>Total</span>
+          <span>$ {totalCart}</span>
+        </div>
         <button>CheckOut</button>
       </div>
     </div>

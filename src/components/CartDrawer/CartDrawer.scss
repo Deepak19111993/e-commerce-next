@@ -23,13 +23,15 @@
       font-size: 20px;
       margin-top: 0;
       margin-bottom: 0;
+      color: purple;
     }
     .icon {
       cursor: pointer !important;
+      color: purple;
     }
   }
   .content {
-    height: calc(100vh - 150px);
+    height: calc(100vh - 182px);
     overflow-y: auto;
     &::-webkit-scrollbar {
       width: 5px;
@@ -58,31 +60,35 @@
             margin: 0 0 10px;
             font-weight: 500;
             text-transform: capitalize;
+            color: purple;
           }
           h4 {
             font-size: 14px;
             margin: 0 0 10px;
             font-weight: 400;
-            color: #777;
+            color: purple;
           }
           h5 {
             font-size: 18px;
             margin: 0 0 10px;
             font-weight: 500;
+            color: purple;
           }
           .quantity {
             display: inline-flex;
             align-items: center;
             font-size: 14px;
+            font-weight: 600;
             margin-top: 10px;
+            color: purple;
             span {
               width: 30px;
               height: 30px;
               display: flex;
               align-items: center;
               justify-content: center;
-              background: #ccc;
-              color: #1a1a1a;
+              background: purple;
+              color: #fff;
               margin: 0 10px;
               font-size: 16px;
               cursor: pointer !important;
@@ -112,12 +118,25 @@
     display: flex;
     justify-content: center;
     padding: 20px 0 0;
-    border-top: 1px solid #ddd;
+    border-top: 1px solid rgba(128 0 128 / 30%);
+    flex-direction: column;
+    .total {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      font-size: 16px;
+      color: purple;
+      span {
+        &:last-child {
+          font-weight: 600;
+        }
+      }
+    }
     button {
       border: 0;
-      min-width: 150px;
+      min-width: 100%;
       padding: 0 20px;
-      background: #000;
+      background: purple;
       color: #fff;
       border-radius: 4px;
       height: 36px;
