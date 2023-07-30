@@ -27,6 +27,10 @@ const Homes = () => {
 
   const [imgName, setImageName] = useState(null);
 
+  const [theme, setTheme] = useState('light');
+
+  const [checkedIn,setCheckedIn] = useState(null);
+
   const userToken = localStorage.getItem('user-token');
 
   const convertBase64 = (file: any) => {
@@ -184,6 +188,30 @@ const Homes = () => {
 
   console.log('productData', productData, cartData);
 
+  const handleTheme = (e: any) => {
+    console.log("handleTheme", e.target.checked);
+    setCheckedIn(e.target.checked);
+    if(e.target.checked === true){
+      setTheme('dark');
+    }
+    else{
+      setTheme('light');
+    }
+  }
+
+  useEffect(() => {
+    const body = document.querySelector('body');
+    console.log('body', body);
+    if(theme === 'dark'){
+      body?.classList.add('dark');
+      body?.classList.remove('light');
+    }
+    else{
+      body?.classList.add('light');
+      body?.classList.remove('dark');
+    }
+  },[theme])
+
   return (
     <>
       {alert && <div className='alert'>Add Successfully!</div>}
@@ -192,8 +220,12 @@ const Homes = () => {
         setCartData={setCartData}
         setLoader={setLoader}
         loader={loader}
+        handleTheme={handleTheme}
+        theme={theme}
+        setCheckedIn={setCheckedIn}
+        checkedIn = {checkedIn}
       />
-      <div className='wrapper'>
+      <div className={`wrapper ${theme}`}>
       <form onSubmit={handleSubmit}>
         <div className='block-input'>
           <h2>Add Product</h2>

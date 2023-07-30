@@ -109,6 +109,10 @@ a {
 body {
   margin: 0;
   padding: 0;
+  background: #fff;
+}
+body.dark{
+  background: #1a1a1a;
 }
 * {
   box-sizing: border-box;

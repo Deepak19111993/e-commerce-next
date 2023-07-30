@@ -23,6 +23,34 @@
   margin: 30px auto 0;
   padding: 0 15px;
   align-items: flex-start;
+  &.dark {
+    background: #1a1a1a;
+    h2,
+    h3,
+    h4,
+    .title,
+    .sub-title,
+    .price {
+      color: #fff !important;
+    }
+    button {
+      background: #fff !important;
+      color: #1a1a1a !important;
+    }
+    form {
+      input {
+        border-color: #fff !important;
+        color: #1a1a1a !important;
+        &::placeholder {
+          color: #1a1a1a !important;
+        }
+      }
+      .upload {
+        background: #fff !important;
+        color: #1a1a1a !important;
+      }
+    }
+  }
 }
 form {
   max-width: 350px;
@@ -124,17 +152,17 @@ form {
       text-align: left;
     }
     .title {
-      font-size: 20px;
+      font-size: 18px;
       font-weight: 500;
       text-transform: capitalize;
       color: purple;
     }
     .sub-title {
-      font-size: 16px;
+      font-size: 14px;
       color: purple;
     }
     .price {
-      font-size: 18px;
+      font-size: 16px;
       font-weight: 500;
       color: purple;
       margin-bottom: 20px;

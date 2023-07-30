@@ -10,7 +10,8 @@ const CartDrawer = ({
   setOpenDrawer,
   setLoader,
   loader,
-  onClickOutside
+  onClickOutside,
+  theme
 }: any) => {
 
   const userToken = localStorage.getItem('user-token');
@@ -139,7 +140,7 @@ const CartDrawer = ({
 
 
   return (
-    <div className={`cart-wrapper ${openDrawer ? 'open' : ''}`} ref={cartRef}>
+    <div className={`cart-wrapper ${theme} ${openDrawer ? 'open' : ''}`} ref={cartRef}>
       <div className='header'>
         <h2 className='title'>Cart</h2>
         <div className='icon' onClick={() => setOpenDrawer(false)}>

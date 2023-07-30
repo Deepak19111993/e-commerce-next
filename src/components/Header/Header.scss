@@ -28,6 +28,7 @@
       cursor: pointer !important;
       color: purple;
       font-weight: 600;
+      font-size: 14px;
       &:last-child {
         margin-right: 0;
       }
@@ -44,6 +45,70 @@
         align-items: center;
         justify-content: center;
         border-radius: 50%;
+      }
+      .switcher {
+        display: flex;
+        align-items: center;
+        span {
+          margin-right: 10px;
+        }
+        input[type='checkbox'] {
+          display: none;
+          &:checked {
+            + label {
+              .switch {
+                background: #fff;
+                border-color: #fff;
+                &::before {
+                  right: 4px;
+                  left: unset;
+                  background: #1a1a1a;
+                }
+              }
+            }
+          }
+        }
+        label {
+          .switch {
+            width: 50px;
+            height: 25px;
+            background: #fff;
+            border: 2px solid purple;
+            border-radius: 30px;
+            position: relative;
+            transition: 0.3s all ease-in-out;
+            cursor: pointer !important;
+            &::before {
+              content: '';
+              position: absolute;
+              left: 4px;
+              right: unset;
+              top: 3px;
+              width: 16px;
+              height: 16px;
+              background: purple;
+              border-radius: 50%;
+              transition: 0.3s all ease-in-out;
+              cursor: pointer !important;
+            }
+          }
+        }
+      }
+    }
+  }
+  &.dark {
+    background: #1a1a1a;
+    color: #fff;
+    div {
+      color: #fff;
+    }
+    ul {
+      li {
+        color: #fff;
+        .count {
+          background: #fff;
+          color: #1a1a1a;
+        }
       }
     }
   }
