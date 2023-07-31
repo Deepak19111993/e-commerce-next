@@ -30,7 +30,8 @@
     h4,
     .title,
     .sub-title,
-    .price {
+    .price,
+    div {
       color: #fff !important;
     }
     button {
@@ -57,27 +58,33 @@ form {
   width: 100%;
   position: sticky;
   top: 96px;
+  margin-right: 20px;
+  border: 1px solid cadetblue;
+  padding: 10px;
+  border-radius: 5px;
+  border-right-width: 3px;
+  border-bottom-width: 3px;
   .block-input {
     width: 100%;
     margin-bottom: 20px;
     position: relative;
     h2 {
       margin: 0 0 30px;
-      color: purple;
+      color: cadetblue;
     }
     input[type='text'],
     input[type='number'] {
       width: 100%;
       height: 34px;
       border-radius: 4px;
-      border: 1px solid purple;
+      border: 1px solid cadetblue;
       padding: 0 12px;
-      color: purple;
+      color: cadetblue;
       outline: none;
       font-size: 14px;
       font-weight: 600;
       &::placeholder {
-        color: purple;
+        color: cadetblue;
         opacity: 0.3;
         font-weight: 400;
       }
@@ -97,7 +104,7 @@ form {
         height: 36px;
         padding: 0 15px;
         border-radius: 5px;
-        background: purple;
+        background: cadetblue;
         color: #fff;
         display: flex;
         align-items: center;
@@ -109,7 +116,7 @@ form {
       }
     }
     .img-name {
-      color: purple;
+      color: cadetblue;
       margin-top: 8px;
       font-size: 14px;
     }
@@ -117,7 +124,7 @@ form {
       width: 100%;
       height: 38px;
       border-radius: 4px;
-      background: purple;
+      background: cadetblue;
       color: #fff;
       font-size: 16px;
       font-weight: 600;
@@ -133,7 +140,6 @@ form {
 .product-wrapper {
   // padding: 0 15px;
   // margin: 20px auto 0;
-  margin-left: 20px;
   flex: 1;
   display: flex;
   flex-wrap: wrap;
@@ -153,18 +159,18 @@ form {
     }
     .title {
       font-size: 18px;
-      font-weight: 500;
+      font-weight: 600;
       text-transform: capitalize;
-      color: purple;
+      color: cadetblue;
     }
     .sub-title {
       font-size: 14px;
-      color: purple;
+      color: cadetblue;
     }
     .price {
       font-size: 16px;
-      font-weight: 500;
-      color: purple;
+      font-weight: 600;
+      color: cadetblue;
       margin-bottom: 20px;
     }
     img {
@@ -191,12 +197,12 @@ form {
       border-radius: 5px;
       margin: auto 0 0;
       cursor: pointer !important;
-      background: purple;
+      background: cadetblue;
       color: #fff;
     }
     &.added {
       button {
-        background: purple;
+        background: cadetblue;
         cursor: not-allowed !important;
         opacity: 0.3;
       }

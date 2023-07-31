@@ -4,12 +4,18 @@ import '../UserSignup/UserSignup.scss';
 import { v4 as uuidv4 } from 'uuid';
 import Link from 'next/link';
 import axios from 'axios';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 
 const Login = () => {
   const [userLogin, setUserLogin] = useState<any>({});
 
   const router = useRouter();
+
+  const routerPath = usePathname();
+
+  const adminUrl = routerPath.split('/').at(1);
+
+  console.log('adminUrl', adminUrl);
 
   const [user, setUser] = useState<any>({
     userName: '',
@@ -26,8 +32,15 @@ const Login = () => {
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
+    let type = {
+      admin: 'admin',
+      user: 'user',
+    };
     setUserLogin({ ...userLogin, user });
-    await axios.post(`http://localhost:3001/login`, user);
+    await axios.post(`http://localhost:3001/login`, {
+      ...user,
+      key: adminUrl === 'admin' ? type.admin : type.user,
+    });
     setUser({
       userName: '',
       email: '',
@@ -47,15 +60,33 @@ const Login = () => {
       .then((res) => res.data);
     console.log('loginData', loginData);
 
-    signupData.map((e: any) => {
+    const newSignup = signupData?.filter(
+      (e: any) => e?.userName === loginData?.userName
+    );
+
+    console.log('newSignup', newSignup[0]);
+
+    if (adminUrl !== 'admin') {
       if (
-        loginData?.userName === e?.userName &&
-        loginData?.email === e?.email
+        newSignup[0]?.userName === loginData?.userName &&
+        newSignup[0]?.email === loginData?.email &&
+        newSignup[0]?.key === loginData?.key
       ) {
-          localStorage.setItem('user-token', loginData?.userName);
-            router.push(`/home`);
+        localStorage.setItem('user-token', loginData?.userName);
+        router.push(`/home`);
+      } else {
+        router.push(`/admin/login`);
       }
-    });
+    } else {
+      if (
+        newSignup[0]?.userName === loginData?.userName &&
+        newSignup[0]?.email === loginData?.email &&
+        newSignup[0]?.key === loginData?.key
+      ) {
+        localStorage.setItem('user-token', loginData?.userName);
+        router.push(`/admin`);
+      }
+    }
   };
 
   return (

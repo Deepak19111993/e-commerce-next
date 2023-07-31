@@ -23,11 +23,11 @@
       font-size: 20px;
       margin-top: 0;
       margin-bottom: 0;
-      color: purple;
+      color: cadetblue;
     }
     .icon {
       cursor: pointer !important;
-      color: purple;
+      color: cadetblue;
     }
   }
   .content {
@@ -58,21 +58,21 @@
           h3 {
             font-size: 18px;
             margin: 0 0 10px;
-            font-weight: 500;
+            font-weight: 600;
             text-transform: capitalize;
-            color: purple;
+            color: cadetblue;
           }
           h4 {
             font-size: 14px;
             margin: 0 0 10px;
             font-weight: 400;
-            color: purple;
+            color: cadetblue;
           }
           h5 {
             font-size: 18px;
             margin: 0 0 10px;
-            font-weight: 500;
-            color: purple;
+            font-weight: 600;
+            color: cadetblue;
           }
           .quantity {
             display: inline-flex;
@@ -80,14 +80,14 @@
             font-size: 14px;
             font-weight: 600;
             margin-top: 10px;
-            color: purple;
+            color: cadetblue;
             span {
               width: 30px;
               height: 30px;
               display: flex;
               align-items: center;
               justify-content: center;
-              background: purple;
+              background: cadetblue;
               color: #fff;
               margin: 0 10px;
               font-size: 16px;
@@ -118,25 +118,21 @@
     display: flex;
     justify-content: center;
     padding: 20px 0 0;
-    border-top: 1px solid rgba(128 0 128 / 30%);
+    border-top: 1px solid cadetblue;
     flex-direction: column;
     .total {
       display: flex;
       justify-content: space-between;
       margin-bottom: 10px;
       font-size: 16px;
-      color: purple;
-      span {
-        &:last-child {
-          font-weight: 600;
-        }
-      }
+      color: cadetblue;
+      font-weight: 600;
     }
     button {
       border: 0;
       min-width: 100%;
       padding: 0 20px;
-      background: purple;
+      background: cadetblue;
       color: #fff;
       border-radius: 4px;
       height: 36px;
@@ -146,28 +142,28 @@
     }
   }
   &.dark {
-    background: #000;
+    background: #fff;
     h2,
     .icon,
     h3,
     h4,
     h5,
     .quantity {
-      color: #fff !important;
+      color: #000 !important;
       span {
-        background: #fff !important;
-        color: #000 !important;
+        background: #000 !important;
+        color: #fff !important;
       }
     }
     .total {
-      color: #fff !important;
-    }
-    button {
-      background: #fff !important;
       color: #000 !important;
     }
+    button {
+      background: #000 !important;
+      color: #fff !important;
+    }
     .footer {
-      border-color: #fff !important;
+      border-color: #000 !important;
     }
   }
 }

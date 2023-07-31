@@ -1,11 +1,16 @@
 .form-data {
   max-width: 400px;
-  margin: 0 auto;
+  margin: 50px auto 0;
   padding: 50px 15px;
+  border: 2px solid cadetblue;
+  border-radius: 10px;
+  border-right-width: 4px;
+  border-bottom-width: 4px;
   h2 {
     font-size: 24px;
     margin: 0 0 40px;
     text-align: center;
+    color: cadetblue;
   }
   .form-data-wrapper {
     form {
@@ -16,21 +21,21 @@
           width: 100%;
           border-radius: 4px;
           outline: none;
-          border: 1px solid #1a1a1a;
-          color: #1a1a1a;
+          border: 1px solid cadetblue;
+          color: cadetblue;
           height: 36px;
           padding: 5px 15px;
           font-size: 14px;
           font-weight: 600;
           &::placeholder {
-            color: #777;
+            color: cadetblue;
             font-weight: 400;
           }
         }
         button {
           height: 38px;
           width: 100%;
-          background: #000;
+          background: cadetblue;
           color: #fff;
           border: none;
           outline: none;
@@ -45,6 +50,8 @@
           font-size: 16px;
           margin-top: 30px;
           text-align: center;
+          font-weight: 600;
+          color: cadetblue;
           a {
             color: orange;
             font-weight: 600;

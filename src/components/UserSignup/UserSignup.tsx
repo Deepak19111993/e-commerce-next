@@ -4,11 +4,17 @@ import './UserSignup.scss';
 import { v4 as uuidv4 } from 'uuid';
 import axios from 'axios';
 import Link from 'next/link';
+import { usePathname, useRouter } from 'next/navigation';
 
 const UserSignup = () => {
+  const router = usePathname();
+
+  const adminUrl = router.split('/').at(1);
+
   const [userSignup, setUserSignup] = useState<any[]>([]);
 
   const [user, setUser] = useState<any>({
+    userName: '',
     name: '',
     email: '',
   });
@@ -22,9 +28,17 @@ const UserSignup = () => {
   };
 
   const handleSubmit = async (e: any) => {
+    let type = {
+      admin: 'admin',
+      user: 'user',
+    };
     e.preventDefault();
     setUserSignup([...userSignup, user]);
-    await axios.post(`http://localhost:3001/signup`, { ...user, cart: [] });
+    await axios.post(`http://localhost:3001/signup`, {
+      ...user,
+      key: adminUrl === 'admin' ? type.admin : type.user,
+      cart: [],
+    });
     setUser({
       userName: '',
       name: '',
@@ -64,6 +78,15 @@ const UserSignup = () => {
               onChange={handleChange}
             />
           </div>
+          {/* <div className='input-data'>
+            <input
+              name='role'
+              type='text'
+              value={user?.role}
+              placeholder='Please enter role'
+              onChange={handleChange}
+            />
+          </div> */}
           <div className='input-data'>
             <button>Sign Up</button>
           </div>
