@@ -4,12 +4,12 @@ import './UserSignup.scss';
 import { v4 as uuidv4 } from 'uuid';
 import axios from 'axios';
 import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 
 const UserSignup = () => {
   const router = usePathname();
 
-  const adminUrl = router.split('/').at(1);
+  const adminUrl = router?.split('/').at(1);
 
   const [userSignup, setUserSignup] = useState<any[]>([]);
 

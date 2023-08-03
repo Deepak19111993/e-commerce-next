@@ -39,6 +39,7 @@
       color: #1a1a1a !important;
     }
     form {
+      border-color: #fff;
       input {
         border-color: #fff !important;
         color: #1a1a1a !important;
@@ -69,7 +70,7 @@ form {
     margin-bottom: 20px;
     position: relative;
     h2 {
-      margin: 0 0 30px;
+      margin: 20px 0 30px;
       color: cadetblue;
     }
     input[type='text'],
@@ -204,7 +205,7 @@ form {
       button {
         background: cadetblue;
         cursor: not-allowed !important;
-        opacity: 0.3;
+        opacity: 0.2;
       }
     }
   }

@@ -3,15 +3,27 @@ import React, { useEffect, useState } from 'react';
 import './Homes.scss';
 import axios from 'axios';
 import Image from 'next/image';
-import Header from '../Header/Header';
+// import { usePathname, useRouter } from 'next/navigation';
+import { deltaAction } from '@/redux/userData/action';
+import { useDispatch, useSelector } from 'react-redux';
 import { usePathname, useRouter } from 'next/navigation';
+// import { rootState } from '@/redux/store';
+// import { RootState } from '@/redux/store';
 
-const Homes = () => {
+const Homes = ({ theme, checkedIn }: any) => {
   const router = useRouter();
+
+  // const delta = useSelector((state: any) => state?.counterReducer);
+
+  // const dispatch = useDispatch();
+
+  // console.log('delta', delta);
 
   const routerPath = usePathname();
 
-  const adminUrl = routerPath.split('/').at(1);
+  const adminUrl = routerPath?.split('/').at(1);
+
+  console.log('router', adminUrl);
 
   const [fileInput, setFileInput] = useState<any>('');
   const [inputValue, setInputValue] = useState<any>({
@@ -31,11 +43,17 @@ const Homes = () => {
 
   const [imgName, setImageName] = useState(null);
 
-  const [theme, setTheme] = useState('light');
+  // const [theme, setTheme] = useState('light');
 
-  const [checkedIn, setCheckedIn] = useState(null);
+  // const [checkedIn, setCheckedIn] = useState(null);
 
-  const userToken = localStorage.getItem('user-token');
+  let userToken: any;
+  let login_key: any;
+
+  if (typeof window !== 'undefined' && window.localStorage) {
+    userToken = localStorage.getItem('user-token');
+    login_key = localStorage.getItem('login-key');
+  }
 
   const convertBase64 = (file: any) => {
     return new Promise((resolve, reject) => {
@@ -107,6 +125,7 @@ const Homes = () => {
   }, [loader]);
 
   const handleProductClick = async (id: any) => {
+    // dispatch(deltaAction(true));
     if (userToken) {
       setLoader(true);
       await axios
@@ -185,36 +204,48 @@ const Homes = () => {
       }
     };
     cartProductData();
-  }, [loader]);
+  }, [loader, userToken]);
 
-  console.log('productData', productData, cartData);
+  // const handleTheme = (e: any) => {
+  //   console.log('handleTheme', e.target.checked);
+  //   setCheckedIn(e.target.checked);
+  //   if (e.target.checked === true) {
+  //     setTheme('dark');
+  //   } else {
+  //     setTheme('light');
+  //   }
+  // };
 
-  const handleTheme = (e: any) => {
-    console.log('handleTheme', e.target.checked);
-    setCheckedIn(e.target.checked);
-    if (e.target.checked === true) {
-      setTheme('dark');
-    } else {
-      setTheme('light');
-    }
-  };
+  // useEffect(() => {
+  //   const body = document.querySelector('body');
+  //   console.log('body', body);
+  //   if (theme === 'dark') {
+  //     body?.classList.add('dark');
+  //     body?.classList.remove('light');
+  //   } else {
+  //     body?.classList.add('light');
+  //     body?.classList.remove('dark');
+  //   }
+  // }, [theme]);
 
   useEffect(() => {
-    const body = document.querySelector('body');
-    console.log('body', body);
-    if (theme === 'dark') {
-      body?.classList.add('dark');
-      body?.classList.remove('light');
-    } else {
-      body?.classList.add('light');
-      body?.classList.remove('dark');
-    }
-  }, [theme]);
+    console.log('login_key', login_key);
+    const afterloginRoute = async () => {
+      if (login_key === 'admin') {
+        router.replace('/admin');
+      } else {
+        if (login_key === 'user') {
+          router.replace('/home');
+        }
+      }
+    };
+    afterloginRoute();
+  }, [login_key, userToken]);
 
   return (
     <>
       {alert && <div className='alert'>Add Successfully!</div>}
-      <Header
+      {/* <Header
         cartData={cartData}
         setCartData={setCartData}
         setLoader={setLoader}
@@ -223,7 +254,7 @@ const Homes = () => {
         theme={theme}
         setCheckedIn={setCheckedIn}
         checkedIn={checkedIn}
-      />
+      /> */}
       <div className={`wrapper ${theme}`}>
         {userToken && adminUrl === 'admin' && (
           <form onSubmit={handleSubmit}>

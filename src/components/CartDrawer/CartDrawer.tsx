@@ -1,7 +1,9 @@
+'use client';
 import React, { useEffect, useState, useRef } from 'react';
 import './CartDrawer.scss';
 import Image from 'next/image';
 import axios from 'axios';
+import { useRouter } from 'next/navigation';
 
 const CartDrawer = ({
   cartData,
@@ -13,11 +15,21 @@ const CartDrawer = ({
   onClickOutside,
   theme,
 }: any) => {
-  const userToken = localStorage.getItem('user-token');
+  // const userToken = localStorage.getItem('user-token');
+
+  let userToken: any;
+  let login_key: any;
+
+  if (typeof window !== 'undefined' && window.localStorage) {
+    userToken = localStorage.getItem('user-token');
+    login_key = localStorage.getItem('login-key');
+  }
 
   const [totalCart, setTotalCart] = useState(0);
 
   const cartRef = useRef(null);
+
+  const router = useRouter();
 
   const decrease = async (id: any) => {
     setLoader(true);
@@ -161,7 +173,7 @@ const CartDrawer = ({
         {cartData?.length > 0 ? (
           <div className='cart-item-wrapper'>
             {cartData.map((item: any) => (
-              <div key={item?.uuid} className='item'>
+              <div key={item?.id} className='item'>
                 <Image
                   src={item?.product_img}
                   alt='product-images'
@@ -195,7 +207,7 @@ const CartDrawer = ({
           <span>Total</span>
           <span>$ {totalCart}</span>
         </div>
-        <button>CheckOut</button>
+        <button onClick={() => router.push('/checkout')}>CheckOut</button>
       </div>
     </div>
   );

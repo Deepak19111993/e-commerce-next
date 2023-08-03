@@ -13,7 +13,11 @@ const Login = () => {
 
   const routerPath = usePathname();
 
-  const adminUrl = routerPath.split('/').at(1);
+  const adminUrl = routerPath?.split('/').at(1);
+
+  const userToken = localStorage.getItem('user-token');
+
+  const login_key = localStorage.getItem('login-key');
 
   console.log('adminUrl', adminUrl);
 
@@ -73,6 +77,7 @@ const Login = () => {
         newSignup[0]?.key === loginData?.key
       ) {
         localStorage.setItem('user-token', loginData?.userName);
+        localStorage.setItem('login-key', loginData?.key);
         router.push(`/home`);
       } else {
         router.push(`/admin/login`);
@@ -84,6 +89,7 @@ const Login = () => {
         newSignup[0]?.key === loginData?.key
       ) {
         localStorage.setItem('user-token', loginData?.userName);
+        localStorage.setItem('login-key', loginData?.key);
         router.push(`/admin`);
       }
     }

@@ -46,7 +46,7 @@
         justify-content: center;
         border-radius: 50%;
       }
-      .switcher {
+      &.switcher {
         display: flex;
         align-items: center;
         span {
@@ -58,7 +58,7 @@
             + label {
               .switch {
                 background: #fff;
-                border-color: #fff;
+                border-color: #000;
                 &::before {
                   right: 4px;
                   left: unset;

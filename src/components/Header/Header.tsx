@@ -1,3 +1,4 @@
+'use client';
 import React, { useEffect, useState } from 'react';
 import './Header.scss';
 import Image from 'next/image';
@@ -19,7 +20,13 @@ const Header = ({
 
   const [openDrawer, setOpenDrawer] = useState(false);
 
-  const userToken = localStorage.getItem('user-token');
+  let userToken: any;
+  let login_key: any;
+
+  if (typeof window !== 'undefined' && window.localStorage) {
+    userToken = localStorage.getItem('user-token');
+    login_key = localStorage.getItem('login-key');
+  }
 
   console.log('cartData', cartData);
 
@@ -45,32 +52,32 @@ const Header = ({
         <div className='logo'>Logo</div>
         {userToken ? (
           <ul className='right'>
+            <li className='switcher'>
+              {/* <div > */}
+              {theme === 'dark' ? <span>Dark</span> : <span>Light</span>}
+              <input
+                type='checkbox'
+                value={theme}
+                id='check'
+                onChange={handleTheme}
+              />
+              <label htmlFor='check'>
+                <div className='switch'></div>
+              </label>
+              {/* </div> */}
+            </li>
             <li>
-              <div className='switcher'>
-                {theme === 'dark' ? <span>Dark</span> : <span>Light</span>}
-                <input
-                  type='checkbox'
-                  value={theme}
-                  id='check'
-                  onChange={handleTheme}
-                />
-                <label for='check'>
-                  <div className='switch'></div>
-                </label>
-              </div>
+              {login_key === 'user' ? 'User:' : 'Admin:'} {userToken}
             </li>
-            <li>user: {userToken}</li>
-            <li onClick={() => setOpenDrawer(true)}>
-              Cart <span className='count'>{cartData?.length}</span>
-            </li>
+            {login_key === 'user' && (
+              <li onClick={() => setOpenDrawer(true)}>
+                Cart <span className='count'>{cartData?.length}</span>
+              </li>
+            )}
             <li onClick={logout}>Log Out</li>
           </ul>
         ) : (
           <ul className='right'>
-            {/* <li>user: {userToken}</li> */}
-            {/* <li onClick={() => setOpenDrawer(true)}>
-            Cart <span className='count'>{cartData?.length}</span>
-          </li> */}
             <li onClick={login}>Log In</li>
           </ul>
         )}
