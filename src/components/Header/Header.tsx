@@ -53,7 +53,6 @@ const Header = ({
         {userToken ? (
           <ul className='right'>
             <li className='switcher'>
-              {/* <div > */}
               {theme === 'dark' ? <span>Dark</span> : <span>Light</span>}
               <input
                 type='checkbox'
@@ -64,7 +63,6 @@ const Header = ({
               <label htmlFor='check'>
                 <div className='switch'></div>
               </label>
-              {/* </div> */}
             </li>
             <li>
               {login_key === 'user' ? 'User:' : 'Admin:'} {userToken}
