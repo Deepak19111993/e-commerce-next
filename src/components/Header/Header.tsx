@@ -5,6 +5,7 @@ import Image from 'next/image';
 import axios from 'axios';
 import CartDrawer from '../CartDrawer/CartDrawer';
 import { useRouter } from 'next/navigation';
+import { useSelector } from 'react-redux';
 
 const Header = ({
   cartData,
@@ -18,7 +19,10 @@ const Header = ({
 }: any) => {
   const router = useRouter();
 
+  const delta = useSelector((state: any) => state?.counterReducer);
+
   const [openDrawer, setOpenDrawer] = useState(false);
+
 
   let userToken: any;
   let login_key: any;
@@ -44,6 +48,29 @@ const Header = ({
   const login = () => {
     router.push('/login');
   };
+
+  useEffect(() => {
+    const cartProductData = async () => {
+      if (userToken) {
+        const singleUserCartData = await axios
+          .get('http://localhost:3001/signup')
+          .then((res) => res?.data);
+
+        let indexData = singleUserCartData?.filter(
+          (e: any) => e?.userName === userToken
+        )[0]?.id;
+
+        await axios
+          .get(`http://localhost:3001/signup/${indexData}`)
+          .then((res) => {
+            if (res) {
+              setCartData(res?.data?.cart);
+            }
+          });
+      }
+    };
+    cartProductData();
+  }, [loader, userToken, delta]);
 
   return (
     <>

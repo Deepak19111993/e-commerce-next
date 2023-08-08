@@ -13,11 +13,11 @@ import { usePathname, useRouter } from 'next/navigation';
 const Homes = ({ theme, checkedIn }: any) => {
   const router = useRouter();
 
-  // const delta = useSelector((state: any) => state?.counterReducer);
+  const delta = useSelector((state: any) => state?.counterReducer);
 
-  // const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
-  // console.log('delta', delta);
+  console.log('delta', delta);
 
   const routerPath = usePathname();
 
@@ -88,6 +88,7 @@ const Homes = ({ theme, checkedIn }: any) => {
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
+    dispatch(deltaAction(true));
     setInputValue({ ...inputValue, file: fileInput });
     postProduct({
       ...inputValue,
@@ -122,10 +123,9 @@ const Homes = ({ theme, checkedIn }: any) => {
 
   useEffect(() => {
     fetchData();
-  }, [loader]);
+  }, [loader, delta]);
 
   const handleProductClick = async (id: any) => {
-    // dispatch(deltaAction(true));
     if (userToken) {
       setLoader(true);
       await axios
@@ -181,7 +181,15 @@ const Homes = ({ theme, checkedIn }: any) => {
     } else {
       router.push('/usersignup');
     }
+    dispatch(deltaAction(!delta));
   };
+
+  const handleDeleteProduct = async(id: any) => {
+    await axios.delete(`http://localhost:3001/product/${id}`);
+    const deletedProduct = productData.map((e:any) => e?.id !== id);
+    setProductData(deletedProduct);
+    dispatch(deltaAction(!delta));
+  }
 
   useEffect(() => {
     const cartProductData = async () => {
@@ -204,29 +212,7 @@ const Homes = ({ theme, checkedIn }: any) => {
       }
     };
     cartProductData();
-  }, [loader, userToken]);
-
-  // const handleTheme = (e: any) => {
-  //   console.log('handleTheme', e.target.checked);
-  //   setCheckedIn(e.target.checked);
-  //   if (e.target.checked === true) {
-  //     setTheme('dark');
-  //   } else {
-  //     setTheme('light');
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   const body = document.querySelector('body');
-  //   console.log('body', body);
-  //   if (theme === 'dark') {
-  //     body?.classList.add('dark');
-  //     body?.classList.remove('light');
-  //   } else {
-  //     body?.classList.add('light');
-  //     body?.classList.remove('dark');
-  //   }
-  // }, [theme]);
+  }, [loader, userToken,delta]);
 
   useEffect(() => {
     console.log('login_key', login_key);
@@ -331,6 +317,9 @@ const Homes = ({ theme, checkedIn }: any) => {
                     : 'Buy'}
                 </button>
               )}
+              {adminUrl === 'admin' && <div className='overlay'>
+                  <button onClick={() => handleDeleteProduct(item?.id)}>Delete</button>
+              </div>}
             </div>
           ))}
         </div>

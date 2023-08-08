@@ -4,6 +4,8 @@ import './CartDrawer.scss';
 import Image from 'next/image';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
+import { useDispatch, useSelector } from 'react-redux';
+import { deltaAction } from '@/redux/userData/action';
 
 const CartDrawer = ({
   cartData,
@@ -30,6 +32,10 @@ const CartDrawer = ({
   const cartRef = useRef(null);
 
   const router = useRouter();
+
+  const dispatch = useDispatch();
+
+  const delta = useSelector((state: any) => state?.counterReducer);
 
   const decrease = async (id: any) => {
     setLoader(true);
@@ -98,6 +104,7 @@ const CartDrawer = ({
     });
     setLoader(false);
   };
+  
 
   const handleDelete = async (id: any) => {
     setLoader(true);
@@ -125,6 +132,7 @@ const CartDrawer = ({
       cart: getUserSingle?.cart.filter((e: any) => e?.id !== id),
     });
     setLoader(false);
+    dispatch(deltaAction(!delta));
   };
 
   const getTotal = () => {

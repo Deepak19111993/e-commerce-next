@@ -2,7 +2,7 @@
 import './globals.scss';
 import ProviderComp from '@/components/ProviderComp/ProviderComp';
 // import type { Metadata } from 'next';
-// import { Inter } from '@next/font/google';
+// import { Inter } from 'next/font/google';
 // import { wrapper } from '@/redux/store';
 
 // const inter = Inter({ subsets: ['latin'] });
@@ -19,7 +19,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang='en'>
-      <body>
+      <body 
+      // className={inter.className}
+      >
         <ProviderComp>{children}</ProviderComp>
       </body>
     </html>
