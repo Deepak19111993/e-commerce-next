@@ -154,6 +154,22 @@ const CartDrawer = ({
 
   console.log('cartData==========', cartData);
 
+  const fetchCartdata = async() => {
+    const productData = await axios.get(`http://localhost:3001/product`).then((res) => res.data);
+    
+    const productId = productData.map((e:any) => e?.id);
+    
+    const newCartData = cartData.map((e:any) => productId.includes(e?.id));
+    console.log("fetchCartdata", productData, newCartData, productId,cartData.map((e:any) => e?.id));
+
+    // setCartData(newCartData);
+    
+  }
+
+  useEffect(() => {
+    fetchCartdata();
+  },[])
+
   useEffect(() => {
     const handleClickOutside = (e: any) => {
       if (cartRef.current && !cartRef.current.contains(e.target)) {
