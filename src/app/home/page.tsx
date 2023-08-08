@@ -1,6 +1,6 @@
 import React from 'react';
 import Homes from '@/components/Homes/Homes';
-import Main from '@/components/Main/Main';
+import Main from '@/components/MainComp/MainComp';
 
 const page = ({ theme }: any) => {
   return (

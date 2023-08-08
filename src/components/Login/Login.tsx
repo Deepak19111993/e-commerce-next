@@ -122,9 +122,9 @@ const Login = () => {
             <button>Login</button>
           </div>
           <div className='input-data'>
-            <p>
+            <span>
               don`t have an account ? <Link href='/usersignup'>Sign Up</Link>
-            </p>
+            </span>
           </div>
         </form>
       </div>

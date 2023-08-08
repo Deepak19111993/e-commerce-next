@@ -1,14 +1,12 @@
 'use client';
-import Main from '@/components/Main/Main';
-// import store from '@/redux/store';
-// import { wrapper } from '@/redux/store';
-// import { Provider } from 'react-redux';
+import styles from './page.module.css'
+import MainComp from '@/components/MainComp/MainComp';
 
 export function Home() {
   return (
-    <>
-      <Main />
-    </>
+    <main className={styles.main}>
+      <MainComp />
+    </main>
   );
 }
 

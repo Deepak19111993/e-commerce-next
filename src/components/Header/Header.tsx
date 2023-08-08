@@ -1,7 +1,7 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import './Header.scss';
-import Image from 'next/image';
+// import Image from 'next/image';
 import axios from 'axios';
 import CartDrawer from '../CartDrawer/CartDrawer';
 import { useRouter } from 'next/navigation';
@@ -100,7 +100,7 @@ const Header = ({
               </li>
             )}
             <li onClick={logout}>Log Out</li>
-          </ul>
+        </ul>
         ) : (
           <ul className='right'>
             <li onClick={login}>Log In</li>

@@ -4,7 +4,7 @@ import Header from '../Header/Header';
 import axios from 'axios';
 import { usePathname } from 'next/navigation';
 
-const Main = ({ children }: any) => {
+const MainComp = ({ children }: any) => {
   const [cartData, setCartData] = useState([]);
 
   const routerPath = usePathname();
@@ -93,4 +93,4 @@ const Main = ({ children }: any) => {
   );
 };
 
-export default Main;
+export default MainComp;

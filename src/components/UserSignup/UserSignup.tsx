@@ -91,9 +91,9 @@ const UserSignup = () => {
             <button>Sign Up</button>
           </div>
           <div className='input-data'>
-            <p>
+            <span>
               Alreay have a account? <Link href='/login'>Login</Link>
-            </p>
+            </span>
           </div>
         </form>
       </div>
