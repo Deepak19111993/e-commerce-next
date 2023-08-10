@@ -1,11 +1,11 @@
-'use client';
-import React, { useEffect, useState, useRef } from 'react';
-import './CartDrawer.scss';
-import Image from 'next/image';
-import axios from 'axios';
-import { useRouter } from 'next/navigation';
-import { useDispatch, useSelector } from 'react-redux';
-import { deltaAction } from '@/redux/userData/action';
+"use client";
+import React, { useEffect, useState, useRef } from "react";
+import "./CartDrawer.scss";
+import Image from "next/image";
+import axios from "axios";
+import { useRouter } from "next/navigation";
+import { useDispatch, useSelector } from "react-redux";
+import { deltaAction } from "@/redux/userData/action";
 
 const CartDrawer = ({
   cartData,
@@ -22,9 +22,9 @@ const CartDrawer = ({
   let userToken: any;
   let login_key: any;
 
-  if (typeof window !== 'undefined' && window.localStorage) {
-    userToken = localStorage.getItem('user-token');
-    login_key = localStorage.getItem('login-key');
+  if (typeof window !== "undefined" && window.localStorage) {
+    userToken = localStorage.getItem("user-token");
+    login_key = localStorage.getItem("login-key");
   }
 
   const [totalCart, setTotalCart] = useState(0);
@@ -40,7 +40,7 @@ const CartDrawer = ({
   const decrease = async (id: any) => {
     setLoader(true);
     const singleUserCartData = await axios
-      .get('http://localhost:3001/signup')
+      .get("http://localhost:3001/signup")
       .then((res) => res?.data);
 
     let indexData = singleUserCartData?.filter(
@@ -50,14 +50,6 @@ const CartDrawer = ({
     const getUserSingle = await axios
       .get(`http://localhost:3001/signup/${indexData}`)
       .then((res) => res?.data);
-
-    console.log(
-      'indexData',
-      indexData,
-      singleUserCartData,
-      getUserSingle?.cart.map((e: any) => e?.id === id),
-      id
-    );
 
     await axios.put(`http://localhost:3001/signup/${indexData}`, {
       ...getUserSingle,
@@ -75,7 +67,7 @@ const CartDrawer = ({
   const increase = async (id: any) => {
     setLoader(true);
     const singleUserCartData = await axios
-      .get('http://localhost:3001/signup')
+      .get("http://localhost:3001/signup")
       .then((res) => res?.data);
 
     let indexData = singleUserCartData?.filter(
@@ -85,14 +77,6 @@ const CartDrawer = ({
     const getUserSingle = await axios
       .get(`http://localhost:3001/signup/${indexData}`)
       .then((res) => res?.data);
-
-    console.log(
-      'indexData',
-      indexData,
-      singleUserCartData,
-      getUserSingle?.cart.map((e: any) => e?.id === id),
-      id
-    );
 
     await axios.put(`http://localhost:3001/signup/${indexData}`, {
       ...getUserSingle,
@@ -104,12 +88,11 @@ const CartDrawer = ({
     });
     setLoader(false);
   };
-  
 
   const handleDelete = async (id: any) => {
     setLoader(true);
     const singleUserCartData = await axios
-      .get('http://localhost:3001/signup')
+      .get("http://localhost:3001/signup")
       .then((res) => res?.data);
 
     let indexData = singleUserCartData?.filter(
@@ -119,13 +102,6 @@ const CartDrawer = ({
     const getUserSingle = await axios
       .get(`http://localhost:3001/signup/${indexData}`)
       .then((res) => res?.data);
-
-    console.log(
-      'indexData',
-      indexData,
-      singleUserCartData,
-      getUserSingle?.cart[id]
-    );
 
     await axios.put(`http://localhost:3001/signup/${indexData}`, {
       ...getUserSingle,
@@ -152,86 +128,73 @@ const CartDrawer = ({
     getTotal();
   }, [cartData, userToken]);
 
-  console.log('cartData==========', cartData);
-
-  const fetchCartdata = async() => {
-    const productData = await axios.get(`http://localhost:3001/product`).then((res) => res.data);
-    
-    const productId = productData.map((e:any) => e?.id);
-    
-    const newCartData = cartData.map((e:any) => productId.includes(e?.id));
-    console.log("fetchCartdata", productData, newCartData, productId,cartData.map((e:any) => e?.id));
-
-    // setCartData(newCartData);
-    
-  }
-
-  useEffect(() => {
-    fetchCartdata();
-  },[])
-
   useEffect(() => {
     const handleClickOutside = (e: any) => {
       if (cartRef.current && !cartRef.current.contains(e.target)) {
         onClickOutside && onClickOutside();
       }
     };
-    document.addEventListener('click', handleClickOutside);
+    document.addEventListener("click", handleClickOutside);
     return () => {
-      document.removeEventListener('click', handleClickOutside);
+      document.removeEventListener("click", handleClickOutside);
     };
   }, [onClickOutside]);
 
   return (
     <div
-      className={`cart-wrapper ${theme} ${openDrawer ? 'open' : ''}`}
+      className={`cart-wrapper ${theme} ${openDrawer ? "open" : ""}`}
       ref={cartRef}
     >
-      <div className='header'>
-        <h2 className='title'>Cart</h2>
-        <div className='icon' onClick={() => setOpenDrawer(false)}>
+      <div className="header">
+        <h2 className="title">Cart</h2>
+        <div className="icon" onClick={() => setOpenDrawer(false)}>
           X
         </div>
       </div>
-      <div className='content'>
-        {cartData?.length > 0 ? (
-          <div className='cart-item-wrapper'>
-            {cartData.map((item: any) => (
-              <div key={item?.id} className='item'>
-                <Image
-                  src={item?.product_img}
-                  alt='product-images'
-                  width={60}
-                  height={60}
-                />
-                <div className='item-content'>
-                  <h3>{item?.product_title}</h3>
-                  <h4>{item?.product_subtitle}</h4>
-                  <h5>$ {item?.product_price * item?.quantity}</h5>
-                  {item?.quantity && (
-                    <div className='quantity'>
-                      <span onClick={() => decrease(item?.id)}>-</span>
-                      {item?.quantity}
-                      <span onClick={() => increase(item?.id)}>+</span>
+      <div className="content">
+        {cartData.length > 0 ? (
+          <div className="cart-item-wrapper">
+            {cartData.map(
+              (item: any) =>
+                item !== null && (
+                  <div key={item?.id} className="item">
+                    <Image
+                      src={item?.product_img}
+                      alt="product-images"
+                      width={60}
+                      height={60}
+                    />
+                    <div className="item-content">
+                      <h3>{item?.product_title}</h3>
+                      <h4>{item?.product_subtitle}</h4>
+                      <h5>$ {item?.product_price * item?.quantity}</h5>
+                      {item?.quantity && (
+                        <div className="quantity">
+                          <span onClick={() => decrease(item?.id)}>-</span>
+                          {item?.quantity}
+                          <span onClick={() => increase(item?.id)}>+</span>
+                        </div>
+                      )}
                     </div>
-                  )}
-                </div>
-                <div className='btn-wrapper'>
-                  <button onClick={() => handleDelete(item?.id)}>Delete</button>
-                </div>
-              </div>
-            ))}
+                    <div className="btn-wrapper">
+                      <button onClick={() => handleDelete(item?.id)}>
+                        Delete
+                      </button>
+                    </div>
+                  </div>
+                )
+            )}
           </div>
         ) : (
-          'No Data'
+          "No Data"
         )}
       </div>
-      <div className='footer'>
-        <div className='total'>
+      <div className="footer">
+        <div className="total">
           <span>Total</span>
           <span>$ {totalCart}</span>
         </div>
-        <button onClick={() => router.push('/checkout')}>CheckOut</button>
+        <button onClick={() => router.push("/checkout")}>CheckOut</button>
       </div>
     </div>
   );

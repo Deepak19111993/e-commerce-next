@@ -1,12 +1,12 @@
-'use client';
-import React, { useEffect, useState } from 'react';
-import './Homes.scss';
-import axios from 'axios';
-import Image from 'next/image';
+"use client";
+import React, { useEffect, useState } from "react";
+import "./Homes.scss";
+import axios from "axios";
+import Image from "next/image";
 // import { usePathname, useRouter } from 'next/navigation';
-import { deltaAction } from '@/redux/userData/action';
-import { useDispatch, useSelector } from 'react-redux';
-import { usePathname, useRouter } from 'next/navigation';
+import { deltaAction } from "@/redux/userData/action";
+import { useDispatch, useSelector } from "react-redux";
+import { usePathname, useRouter } from "next/navigation";
 // import { rootState } from '@/redux/store';
 // import { RootState } from '@/redux/store';
 
@@ -17,20 +17,17 @@ const Homes = ({ theme, checkedIn }: any) => {
 
   const dispatch = useDispatch();
 
-  console.log('delta', delta);
-
   const routerPath = usePathname();
 
-  const adminUrl = routerPath?.split('/').at(1);
+  const adminUrl = routerPath?.split("/").at(1);
 
-  console.log('router', adminUrl);
-
-  const [fileInput, setFileInput] = useState<any>('');
+  const [fileInput, setFileInput] = useState<any>("");
   const [inputValue, setInputValue] = useState<any>({
     product_img: fileInput,
-    product_title: '',
-    product_subtitle: '',
-    product_price: '',
+    product_title: "",
+    product_subtitle: "",
+    product_price: "",
+    category: "",
   });
 
   const [productData, setProductData] = useState<any>([]);
@@ -50,9 +47,9 @@ const Homes = ({ theme, checkedIn }: any) => {
   let userToken: any;
   let login_key: any;
 
-  if (typeof window !== 'undefined' && window.localStorage) {
-    userToken = localStorage.getItem('user-token');
-    login_key = localStorage.getItem('login-key');
+  if (typeof window !== "undefined" && window.localStorage) {
+    userToken = localStorage.getItem("user-token");
+    login_key = localStorage.getItem("login-key");
   }
 
   const convertBase64 = (file: any) => {
@@ -69,8 +66,6 @@ const Homes = ({ theme, checkedIn }: any) => {
   };
 
   const handleChange = async (e: any) => {
-    console.log('product', e);
-
     setInputValue({ ...inputValue, [e.target.name]: e.target.value });
 
     const file = e.target.files[0];
@@ -83,7 +78,7 @@ const Homes = ({ theme, checkedIn }: any) => {
   };
 
   const postProduct = async (singleData: any) => {
-    await axios.post('http://localhost:3001/product', singleData);
+    await axios.post("http://localhost:3001/product", singleData);
   };
 
   const handleSubmit = (e: any) => {
@@ -100,9 +95,10 @@ const Homes = ({ theme, checkedIn }: any) => {
     }, 1000);
     setInputValue({
       product_img: setImageName(null),
-      product_title: '',
-      product_subtitle: '',
-      product_price: '',
+      product_title: "",
+      product_subtitle: "",
+      product_price: "",
+      category: "",
     });
     setTimeout(() => {
       setAlert(true);
@@ -117,7 +113,7 @@ const Homes = ({ theme, checkedIn }: any) => {
 
   const fetchData = async () => {
     await axios
-      .get('http://localhost:3001/product')
+      .get("http://localhost:3001/product")
       .then((res) => setProductData(res?.data));
   };
 
@@ -133,14 +129,12 @@ const Homes = ({ theme, checkedIn }: any) => {
         .then(async (res) => {
           if (res) {
             const singleUserCartData = await axios
-              .get('http://localhost:3001/signup')
+              .get("http://localhost:3001/signup")
               .then((res) => res?.data);
 
             let indexData = singleUserCartData?.filter(
               (e: any) => e?.userName === userToken
             )[0]?.id;
-
-            console.log('indexData', indexData, singleUserCartData);
 
             const getUserSingle = await axios
               .get(`http://localhost:3001/signup/${indexData}`)
@@ -179,23 +173,23 @@ const Homes = ({ theme, checkedIn }: any) => {
 
       setLoader(false);
     } else {
-      router.push('/usersignup');
+      router.push("/usersignup");
     }
     dispatch(deltaAction(!delta));
   };
 
-  const handleDeleteProduct = async(id: any) => {
+  const handleDeleteProduct = async (id: any) => {
     await axios.delete(`http://localhost:3001/product/${id}`);
-    const deletedProduct = productData.map((e:any) => e?.id !== id);
+    const deletedProduct = productData.map((e: any) => e?.id !== id);
     setProductData(deletedProduct);
     dispatch(deltaAction(!delta));
-  }
+  };
 
   useEffect(() => {
     const cartProductData = async () => {
       if (userToken) {
         const singleUserCartData = await axios
-          .get('http://localhost:3001/signup')
+          .get("http://localhost:3001/signup")
           .then((res) => res?.data);
 
         let indexData = singleUserCartData?.filter(
@@ -212,25 +206,26 @@ const Homes = ({ theme, checkedIn }: any) => {
       }
     };
     cartProductData();
-  }, [loader, userToken,delta]);
+  }, [loader, userToken, delta]);
 
   useEffect(() => {
-    console.log('login_key', login_key);
     const afterloginRoute = async () => {
-      if (login_key === 'admin') {
-        router.replace('/admin');
+      if (login_key === "admin") {
+        router.replace("/admin");
       } else {
-        if (login_key === 'user') {
-          router.replace('/home');
+        if (login_key === "user") {
+          router.replace("/home");
         }
       }
     };
     afterloginRoute();
   }, [login_key, userToken]);
 
+  console.log("productData===================", productData, inputValue);
+
   return (
     <>
-      {alert && <div className='alert'>Add Successfully!</div>}
+      {alert && <div className="alert">Add Successfully!</div>}
       {/* <Header
         cartData={cartData}
         setCartData={setCartData}
@@ -242,84 +237,102 @@ const Homes = ({ theme, checkedIn }: any) => {
         checkedIn={checkedIn}
       /> */}
       <div className={`wrapper ${theme}`}>
-        {userToken && adminUrl === 'admin' && (
+        {userToken && adminUrl === "admin" && (
           <form onSubmit={handleSubmit}>
-            <div className='block-input'>
+            <div className="block-input">
               <h2>Add Product</h2>
             </div>
-            <div className='block-input'>
+            <div className="block-input">
+              <select
+                name="category"
+                defaultValue="select"
+                onChange={handleChange}
+                value={inputValue?.category}
+              >
+                <option value="select">select</option>
+                <option value="men">Men</option>
+                <option value="women">Women</option>
+                <option value="electronic">Electronics</option>
+                <option value="toy">Toys</option>
+              </select>
+            </div>
+            <div className="block-input">
               <input
-                type='file'
-                name='product_img'
+                type="file"
+                name="product_img"
                 onChange={handleChange}
                 value={inputValue?.product_img}
               />
-              <div className='upload'>upload</div>
-              <div className='img-name'>{imgName}</div>
+              <div className="upload">upload</div>
+              <div className="img-name">{imgName}</div>
             </div>
-            <div className='block-input'>
+            <div className="block-input">
               <input
-                type='text'
-                name='product_title'
-                placeholder='Product Title'
+                type="text"
+                name="product_title"
+                placeholder="Product Title"
                 onChange={handleChange}
                 value={inputValue?.product_title}
               />
             </div>
-            <div className='block-input'>
+            <div className="block-input">
               <input
-                type='text'
-                name='product_subtitle'
-                placeholder='Product Sub Title'
+                type="text"
+                name="product_subtitle"
+                placeholder="Product Sub Title"
                 onChange={handleChange}
                 value={inputValue?.product_subtitle}
               />
             </div>
-            <div className='block-input'>
+            <div className="block-input">
               <input
-                type='number'
-                name='product_price'
-                placeholder='Product Price'
+                type="number"
+                name="product_price"
+                placeholder="Product Price"
                 onChange={handleChange}
                 value={inputValue?.product_price}
               />
             </div>
-            <div className='block-input'>
-              <button type='submit'>Submit</button>
+            <div className="block-input">
+              <button type="submit">Submit</button>
             </div>
           </form>
         )}
-        <div className='product-wrapper'>
+        <div className="product-wrapper">
           {productData.map((item: any) => (
             <div
               key={item?.id}
               className={`item ${
                 cartData?.map((e: any) => e?.id).includes(item?.id)
-                  ? 'added'
-                  : ''
+                  ? "added"
+                  : ""
               }`}
             >
               <Image
                 src={item?.product_img}
                 width={250}
                 height={250}
-                alt='images'
+                alt="images"
               />
-              <div className='title'>{item?.product_title}</div>
-              <div className='sub-title'>{item?.product_subtitle}</div>
+              <div className="title">{item?.product_title}</div>
+              <div className="sub-title">{item?.product_subtitle}</div>
               {item?.product_price && (
-                <div className='price'>$ {item?.product_price}</div>
+                <div className="price">$ {item?.product_price}</div>
               )}
-              {userToken && adminUrl !== 'admin' && (
+              {userToken && adminUrl !== "admin" && (
                 <button onClick={() => handleProductClick(item?.id)}>
                   {cartData?.map((e: any) => e?.id).includes(item?.id)
-                    ? 'Added'
-                    : 'Buy'}
+                    ? "Added"
+                    : "Buy"}
                 </button>
               )}
-              {adminUrl === 'admin' && <div className='overlay'>
-                  <button onClick={() => handleDeleteProduct(item?.id)}>Delete</button>
-              </div>}
+              {adminUrl === "admin" && (
+                <div className="overlay">
+                  <button onClick={() => handleDeleteProduct(item?.id)}>
+                    Delete
+                  </button>
+                </div>
+              )}
             </div>
           ))}
         </div>

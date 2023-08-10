@@ -73,6 +73,18 @@ form {
       margin: 20px 0 30px;
       color: cadetblue;
     }
+    select{
+      height: 34px;
+      width: 100%;
+      outline: none;
+      border: 1px solid cadetblue;
+      background: transparent;
+      padding: 0 8px;
+      border-radius: 4px;
+      font-weight: 600;
+      font-size: 14px;
+      color: cadetblue;
+    }
     input[type='text'],
     input[type='number'] {
       width: 100%;
@@ -217,6 +229,7 @@ form {
       height: 0;
       background: rgba(0,0,0,30%);
       opacity: 0;
+      visibility: hidden;
       transition: .3s all ease-in-out;
       color: #fff;
       display: flex;
@@ -234,6 +247,7 @@ form {
         opacity: 1;
         height: 40px;
         margin: 0;
+        visibility: visible;
       }
     }
   }

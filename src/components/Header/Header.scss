@@ -1,5 +1,6 @@
 .header-wrapper {
   max-width: 1440px;
+  width: 100%;
   margin: 0 auto;
   min-height: 60px;
   padding: 15px 15px;
@@ -14,6 +15,47 @@
     color: cadetblue;
     font-weight: 600;
     img {
+    }
+  }
+  .search-box{
+    margin-left: 30px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    overflow: hidden;
+    height: 38px;
+    display: flex;
+    input{
+      background: #fff;
+      font-size: 14px;
+      height: 37px;
+      border: none;
+      outline: none;
+      padding: 0 15px;
+      min-width: 400px;
+      color: #1a1a1a;
+      font-weight: 600;
+      transition: .3s all ease-in-out;
+      &::placeholder{
+        opacity: .5;
+      }
+      &:not(:placeholder-shown){
+        + button{
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+      }
+    }
+    button{
+      display: none;
+      font-weight: 600;
+      height: 100%;
+      border: none;
+      padding: 0 10px;
+      font-size: 12px;
+      transition: .3s all ease-in-out;
+      cursor: pointer !important;
+      border-left: 1px solid #ccc;
     }
   }
   .right {
