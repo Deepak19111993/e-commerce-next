@@ -89,6 +89,16 @@ const Header = ({
     cartProductData();
   }, []);
 
+  // const searchProduct = async (searchText: any) => {
+  //   const productSearchData = await axios
+  //     .get("http://localhost:3001/product")
+  //     .then((res) => res?.data);
+
+  //   const filterData = productSearchData.filter((e: any) =>
+  //     e?.product_title.toLowerCase().includes(searchText)
+  //   );
+  // };
+
   return (
     <>
       <div className={`header-wrapper ${theme}`}>
@@ -96,7 +106,10 @@ const Header = ({
         <div className="logo">Logo</div>
         {userToken && login_key === "user" && (
           <div className="search-box">
-            <input placeholder="Search Product" />
+            <input
+              placeholder="Search Product"
+              // onChange={searchProduct}
+            />
             <button>Search</button>
           </div>
         )}

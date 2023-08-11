@@ -1,22 +1,25 @@
-'use client';
-import React, { useState } from 'react';
-import './UserSignup.scss';
-import { v4 as uuidv4 } from 'uuid';
-import axios from 'axios';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+"use client";
+import React, { useState } from "react";
+import "./UserSignup.scss";
+import { v4 as uuidv4 } from "uuid";
+import axios from "axios";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useDispatch } from "react-redux";
+import { postUserAction } from "@/redux/userData/action";
 
 const UserSignup = () => {
+  const dispatch = useDispatch();
   const router = usePathname();
 
-  const adminUrl = router?.split('/').at(1);
+  const adminUrl = router?.split("/").at(1);
 
   const [userSignup, setUserSignup] = useState<any[]>([]);
 
   const [user, setUser] = useState<any>({
-    userName: '',
-    name: '',
-    email: '',
+    userName: "",
+    name: "",
+    email: "",
   });
 
   const handleChange = (e: any) => {
@@ -29,52 +32,54 @@ const UserSignup = () => {
 
   const handleSubmit = async (e: any) => {
     let type = {
-      admin: 'admin',
-      user: 'user',
+      admin: "admin",
+      user: "user",
     };
     e.preventDefault();
     setUserSignup([...userSignup, user]);
-    await axios.post(`http://localhost:3001/signup`, {
-      ...user,
-      key: adminUrl === 'admin' ? type.admin : type.user,
-      cart: [],
-    });
+    dispatch(
+      postUserAction({
+        ...user,
+        key: adminUrl === "admin" ? type.admin : type.user,
+        cart: [],
+      })
+    );
     setUser({
-      userName: '',
-      name: '',
-      email: '',
+      userName: "",
+      name: "",
+      email: "",
     });
   };
 
   return (
-    <div className='form-data'>
+    <div className="form-data">
       <h2>User Signup</h2>
-      <div className='form-data-wrapper'>
+      <div className="form-data-wrapper">
         <form onSubmit={handleSubmit}>
-          <div className='input-data'>
+          <div className="input-data">
             <input
-              name='userName'
+              name="userName"
               value={user?.userName}
-              type='text'
-              placeholder='Please enter username'
+              type="text"
+              placeholder="Please enter username"
               onChange={handleChange}
             />
           </div>
-          <div className='input-data'>
+          <div className="input-data">
             <input
-              name='name'
+              name="name"
               value={user?.name}
-              type='text'
-              placeholder='Please enter name'
+              type="text"
+              placeholder="Please enter name"
               onChange={handleChange}
             />
           </div>
-          <div className='input-data'>
+          <div className="input-data">
             <input
-              name='email'
-              type='text'
+              name="email"
+              type="text"
               value={user?.email}
-              placeholder='Please enter email'
+              placeholder="Please enter email"
               onChange={handleChange}
             />
           </div>
@@ -87,12 +92,12 @@ const UserSignup = () => {
               onChange={handleChange}
             />
           </div> */}
-          <div className='input-data'>
+          <div className="input-data">
             <button>Sign Up</button>
           </div>
-          <div className='input-data'>
+          <div className="input-data">
             <span>
-              Alreay have a account? <Link href='/login'>Login</Link>
+              Alreay have a account? <Link href="/login">Login</Link>
             </span>
           </div>
         </form>

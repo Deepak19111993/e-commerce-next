@@ -1,10 +1,15 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import "./Homes.scss";
 import axios from "axios";
 import Image from "next/image";
 // import { usePathname, useRouter } from 'next/navigation';
-import { deltaAction } from "@/redux/userData/action";
+import {
+  getUserAction,
+  postProductAction,
+  productDataAction,
+  singleProductDataAction,
+} from "@/redux/userData/action";
 import { useDispatch, useSelector } from "react-redux";
 import { usePathname, useRouter } from "next/navigation";
 // import { rootState } from '@/redux/store';
@@ -13,7 +18,9 @@ import { usePathname, useRouter } from "next/navigation";
 const Homes = ({ theme, checkedIn }: any) => {
   const router = useRouter();
 
-  const delta = useSelector((state: any) => state?.counterReducer);
+  const { loader, products, user, singleProduct } = useSelector(
+    (state: any) => state?.counterReducer
+  );
 
   const dispatch = useDispatch();
 
@@ -30,11 +37,11 @@ const Homes = ({ theme, checkedIn }: any) => {
     category: "",
   });
 
-  const [productData, setProductData] = useState<any>([]);
+  // const [product, setProduct] = useState<any>([]);
 
   const [cartData, setCartData] = useState([]);
 
-  const [loader, setLoader] = useState(false);
+  // const [loader, setLoader] = useState(false);
 
   const [alert, setAlert] = useState(false);
 
@@ -78,12 +85,12 @@ const Homes = ({ theme, checkedIn }: any) => {
   };
 
   const postProduct = async (singleData: any) => {
-    await axios.post("http://localhost:3001/product", singleData);
+    dispatch(postProductAction(singleData));
+    // await axios.post("http://localhost:3001/product", singleData);
   };
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
-    dispatch(deltaAction(true));
     setInputValue({ ...inputValue, file: fileInput });
     postProduct({
       ...inputValue,
@@ -91,7 +98,7 @@ const Homes = ({ theme, checkedIn }: any) => {
       count: 0,
     });
     setTimeout(() => {
-      fetchData();
+      dispatch(productDataAction());
     }, 1000);
     setInputValue({
       product_img: setImageName(null),
@@ -111,19 +118,29 @@ const Homes = ({ theme, checkedIn }: any) => {
     }, 500);
   };
 
-  const fetchData = async () => {
-    await axios
-      .get("http://localhost:3001/product")
-      .then((res) => setProductData(res?.data));
-  };
+  useEffect(() => {
+    dispatch(productDataAction());
+  }, []);
 
   useEffect(() => {
-    fetchData();
-  }, [loader, delta]);
+    dispatch(getUserAction());
+  }, [userToken]);
 
   const handleProductClick = async (id: any) => {
     if (userToken) {
-      setLoader(true);
+      dispatch(singleProductDataAction(id));
+
+      console.log(
+        "fvbdhbvdvgdgb========",
+        user?.filter((e: any) => e?.userName === userToken)
+      );
+
+      // singleProduct
+      // user
+
+      let indexData = user?.filter((e: any) => e?.userName === userToken)[0]
+        ?.id;
+
       await axios
         .get(`http://localhost:3001/product/${id}`)
         .then(async (res) => {
@@ -171,18 +188,18 @@ const Homes = ({ theme, checkedIn }: any) => {
           }
         });
 
-      setLoader(false);
+      // setLoader(false);
     } else {
       router.push("/usersignup");
     }
-    dispatch(deltaAction(!delta));
+    // dispatch(deltaAction(!delta));
   };
 
   const handleDeleteProduct = async (id: any) => {
-    await axios.delete(`http://localhost:3001/product/${id}`);
-    const deletedProduct = productData.map((e: any) => e?.id !== id);
-    setProductData(deletedProduct);
-    dispatch(deltaAction(!delta));
+    // await axios.delete(`http://localhost:3001/product/${id}`);
+    // const deletedProduct = products?.map((e: any) => e?.id !== id);
+    // setProduct(deletedProduct);
+    // dispatch(deltaAction(!delta));
   };
 
   useEffect(() => {
@@ -206,7 +223,7 @@ const Homes = ({ theme, checkedIn }: any) => {
       }
     };
     cartProductData();
-  }, [loader, userToken, delta]);
+  }, [userToken]);
 
   useEffect(() => {
     const afterloginRoute = async () => {
@@ -221,7 +238,11 @@ const Homes = ({ theme, checkedIn }: any) => {
     afterloginRoute();
   }, [login_key, userToken]);
 
-  console.log("productData===================", productData, inputValue);
+  // useEffect(() => {
+  //   dispatch(getUserAction());
+  // }, []);
+
+  console.log("productData===================", products, singleProduct, user);
 
   return (
     <>
@@ -298,43 +319,46 @@ const Homes = ({ theme, checkedIn }: any) => {
             </div>
           </form>
         )}
+
         <div className="product-wrapper">
-          {productData.map((item: any) => (
-            <div
-              key={item?.id}
-              className={`item ${
-                cartData?.map((e: any) => e?.id).includes(item?.id)
-                  ? "added"
-                  : ""
-              }`}
-            >
-              <Image
-                src={item?.product_img}
-                width={250}
-                height={250}
-                alt="images"
-              />
-              <div className="title">{item?.product_title}</div>
-              <div className="sub-title">{item?.product_subtitle}</div>
-              {item?.product_price && (
-                <div className="price">$ {item?.product_price}</div>
-              )}
-              {userToken && adminUrl !== "admin" && (
-                <button onClick={() => handleProductClick(item?.id)}>
-                  {cartData?.map((e: any) => e?.id).includes(item?.id)
-                    ? "Added"
-                    : "Buy"}
-                </button>
-              )}
-              {adminUrl === "admin" && (
-                <div className="overlay">
-                  <button onClick={() => handleDeleteProduct(item?.id)}>
-                    Delete
-                  </button>
+          {loader
+            ? "Loader"
+            : products?.map((item: any) => (
+                <div
+                  key={item?.id}
+                  className={`item ${
+                    cartData?.map((e: any) => e?.id).includes(item?.id)
+                      ? "added"
+                      : ""
+                  }`}
+                >
+                  <Image
+                    src={item?.product_img}
+                    width={250}
+                    height={250}
+                    alt="images"
+                  />
+                  <div className="title">{item?.product_title}</div>
+                  <div className="sub-title">{item?.product_subtitle}</div>
+                  {item?.product_price && (
+                    <div className="price">$ {item?.product_price}</div>
+                  )}
+                  {userToken && adminUrl !== "admin" && (
+                    <button onClick={() => handleProductClick(item?.id)}>
+                      {cartData?.map((e: any) => e?.id).includes(item?.id)
+                        ? "Added"
+                        : "Buy"}
+                    </button>
+                  )}
+                  {adminUrl === "admin" && (
+                    <div className="overlay">
+                      <button onClick={() => handleDeleteProduct(item?.id)}>
+                        Delete
+                      </button>
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
-          ))}
+              ))}
         </div>
       </div>
     </>
