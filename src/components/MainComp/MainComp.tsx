@@ -13,7 +13,7 @@ const MainComp = ({ children }: any) => {
 
   const adminUrl = routerPath?.split("/").at(1);
 
-  const [loader, setLoader] = useState(false);
+  // const [loader, setLoader] = useState(false);
 
   //   const [alert, setAlert] = useState(false);
 
@@ -23,7 +23,11 @@ const MainComp = ({ children }: any) => {
 
   const [checkedIn, setCheckedIn] = useState(null);
 
-  const delta = useSelector((state: RootState) => state.counterReducer);
+  // const delta = useSelector((state: RootState) => state.counterReducer);
+
+  const { loader, products, user, singleProduct } = useSelector(
+    (state: any) => state?.counterReducer
+  );
 
   let userToken: any;
   let login_key: any;
@@ -33,26 +37,39 @@ const MainComp = ({ children }: any) => {
     login_key = localStorage.getItem("login-key");
   }
 
+  const cartProductData = async () => {
+    if (userToken) {
+      const getUserSingle = user?.filter(
+        (e: any) => e?.userName === userToken
+      )[0];
+      let indexData = user?.filter((e: any) => e?.userName === userToken)[0]
+        ?.id;
+      console.log("cartProductData();", getUserSingle, user);
+
+      setCartData(getUserSingle?.cart);
+    }
+  };
+
   useEffect(() => {
-    const cartProductData = async () => {
-      if (userToken) {
-        const singleUserCartData = await axios
-          .get("http://localhost:3001/signup")
-          .then((res) => res?.data);
+    // const cartProductData = async () => {
+    //   if (userToken) {
+    //     const singleUserCartData = await axios
+    //       .get("http://localhost:3001/signup")
+    //       .then((res) => res?.data);
 
-        let indexData = singleUserCartData?.filter(
-          (e: any) => e?.userName === userToken
-        )[0]?.id;
+    //     let indexData = singleUserCartData?.filter(
+    //       (e: any) => e?.userName === userToken
+    //     )[0]?.id;
 
-        await axios
-          .get(`http://localhost:3001/signup/${indexData}`)
-          .then((res) => {
-            if (res) {
-              setCartData(res?.data?.cart);
-            }
-          });
-      }
-    };
+    //     await axios
+    //       .get(`http://localhost:3001/signup/${indexData}`)
+    //       .then((res) => {
+    //         if (res) {
+    //           setCartData(res?.data?.cart);
+    //         }
+    //       });
+    //   }
+    // };
     cartProductData();
   }, [loader, userToken]);
 
@@ -76,12 +93,18 @@ const MainComp = ({ children }: any) => {
     }
   }, [theme]);
 
+  useEffect(() => {
+    // dispatch(getUserAction());
+    // dispatch(productDataAction());
+    cartProductData();
+  }, []);
+
   return (
     <>
       <Header
         cartData={cartData}
         setCartData={setCartData}
-        setLoader={setLoader}
+        // setLoader={setLoader}
         loader={loader}
         handleTheme={handleTheme}
         theme={theme}

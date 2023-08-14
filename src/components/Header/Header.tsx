@@ -5,13 +5,17 @@ import "./Header.scss";
 import axios from "axios";
 import CartDrawer from "../CartDrawer/CartDrawer";
 import { useRouter } from "next/navigation";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  getUserAction,
+  productDataAction,
+  putUserAction,
+} from "@/redux/userData/action";
 
 const Header = ({
   cartData,
   setCartData,
   setLoader,
-  loader,
   handleTheme,
   theme,
   setCheckedIn,
@@ -19,9 +23,15 @@ const Header = ({
 }: any) => {
   const router = useRouter();
 
-  const delta = useSelector((state: any) => state?.counterReducer);
+  const dispatch = useDispatch();
+
+  const { loader, products, user, singleProduct } = useSelector(
+    (state: any) => state?.counterReducer
+  );
 
   const [openDrawer, setOpenDrawer] = useState(false);
+
+  const [product, setProduct] = useState([]);
 
   let userToken: any;
   let login_key: any;
@@ -46,48 +56,27 @@ const Header = ({
     router.push("/login");
   };
 
-  const cartProductData = async () => {
-    if (userToken) {
-      const productDataE = await axios
-        .get(`http://localhost:3001/product`)
-        .then((res) => res.data);
+  // const cartProductData = () => {
+  //   if (userToken) {
+  //     const getUserSingle = user?.filter(
+  //       (e: any) => e?.userName === userToken
+  //     )[0];
 
-      const singleUserCartData = await axios
-        .get("http://localhost:3001/signup")
-        .then((res) => res?.data);
+  //     // let indexData = user?.filter((e: any) => e?.userName === userToken)[0]
+  //     //   ?.id;
 
-      let indexData = singleUserCartData?.filter(
-        (e: any) => e?.userName === userToken
-      )[0]?.id;
+  //     const productId = product?.map((e: any) => e?.id);
 
-      const productId = productDataE?.map((e: any) => e?.id);
-
-      const getUserSingle = await axios
-        .get(`http://localhost:3001/signup/${indexData}`)
-        .then((res) => res?.data);
-
-      await axios.put(`http://localhost:3001/signup/${indexData}`, {
-        ...getUserSingle,
-        cart: getUserSingle?.cart.filter((e: any) => productId.includes(e?.id)),
-      });
-
-      await axios
-        .get(`http://localhost:3001/signup/${indexData}`)
-        .then((res) => {
-          if (res) {
-            setCartData(res?.data?.cart);
-          }
-        });
-    }
-  };
+  //     setCartData(
+  //       getUserSingle?.cart.filter((e: any) => productId.includes(e?.id))
+  //     );
+  //   }
+  // };
 
   useEffect(() => {
-    cartProductData();
-  }, [loader, userToken, delta]);
-
-  useEffect(() => {
-    cartProductData();
-  }, []);
+    setProduct(products);
+    // cartProductData();
+  }, [products]);
 
   // const searchProduct = async (searchText: any) => {
   //   const productSearchData = await axios
@@ -98,6 +87,8 @@ const Header = ({
   //     e?.product_title.toLowerCase().includes(searchText)
   //   );
   // };
+
+  console.log("header ====> ======>", products, cartData);
 
   return (
     <>
@@ -132,7 +123,7 @@ const Header = ({
             </li>
             {login_key === "user" && (
               <li onClick={() => setOpenDrawer(true)}>
-                Cart <span className="count">{cartData.length}</span>
+                Cart <span className="count">{cartData?.length}</span>
               </li>
             )}
             <li onClick={logout}>Log Out</li>

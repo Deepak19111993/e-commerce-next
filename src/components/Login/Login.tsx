@@ -6,7 +6,6 @@ import Link from "next/link";
 import axios from "axios";
 import { useRouter, usePathname } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
-import { deltaAction } from "@/redux/userData/action";
 import { RootState } from "@/redux/store";
 
 const Login = () => {
@@ -56,7 +55,7 @@ const Login = () => {
     });
 
     LoginData();
-    dispatch(deltaAction(!delta));
+    // dispatch(deltaAction(!delta));
   };
 
   const LoginData = async () => {

@@ -5,7 +5,6 @@ import Image from "next/image";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
-import { deltaAction } from "@/redux/userData/action";
 
 const CartDrawer = ({
   cartData,
@@ -108,7 +107,7 @@ const CartDrawer = ({
       cart: getUserSingle?.cart.filter((e: any) => e?.id !== id),
     });
     setLoader(false);
-    dispatch(deltaAction(!delta));
+    // dispatch(deltaAction(!delta));
   };
 
   const getTotal = () => {
@@ -118,7 +117,7 @@ const CartDrawer = ({
     });
     let cartTotal = 0;
 
-    total.forEach((e: any) => {
+    total?.forEach((e: any) => {
       cartTotal += e;
     });
 
@@ -152,7 +151,7 @@ const CartDrawer = ({
         </div>
       </div>
       <div className="content">
-        {cartData.length > 0 ? (
+        {cartData?.length > 0 ? (
           <div className="cart-item-wrapper">
             {cartData.map(
               (item: any) =>
