@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { use, useEffect, useMemo, useState } from "react";
 import "./Homes.scss";
 import axios from "axios";
 import Image from "next/image";
@@ -25,7 +25,9 @@ const Homes = ({ theme, checkedIn }: any) => {
     (state: any) => state?.counterReducer
   );
 
-  console.log("singleProduct ============", singleProduct);
+  const [users, setUsers] = useState([]);
+
+  console.log("userefkvnj ============", users);
 
   const dispatch = useDispatch();
 
@@ -59,6 +61,7 @@ const Homes = ({ theme, checkedIn }: any) => {
   // const [theme, setTheme] = useState('light');
 
   // const [checkedIn, setCheckedIn] = useState(null);
+  const [clicked, setClicked] = useState(false);
 
   let userToken: any;
   let login_key: any;
@@ -128,34 +131,43 @@ const Homes = ({ theme, checkedIn }: any) => {
   };
 
   const handleProductClick = (id: any) => {
+    let singleProductData = product.filter((e: any) => e?.id === id);
+
+    setSingleProducts(singleProductData[0]);
+
     setProductId(id);
-    dispatch(singleProductDataAction({ id, user }));
 
-    console.log("singleData ==============>", singleProduct);
+    setClicked(true);
+  };
 
-    // dispatch(getUserAction());
-
+  const fetchSingleProductandcart = () => {
     if (userToken) {
-      const getUserSingle = user?.find((e: any) => e?.userName === userToken);
+      const getUserSingle: any = users?.find(
+        (e: any) => e?.userName === userToken
+      );
 
       if (!getUserSingle?.cart?.map((e: any) => e?.id).includes(productId)) {
-        // dispatch(
-        //   putUserAction({
-        //     id: getUserSingle?.id,
-        //     data: {
-        //       ...getUserSingle,
-        //       cart: [
-        //         ...getUserSingle?.cart,
-        //         {
-        //           ...singleProducts,
-        //           quantity: 1,
-        //           userName: userToken,
-        //           count: 1,
-        //         },
-        //       ],
-        //     },
-        //   })
-        // );
+        dispatch(
+          putUserAction({
+            id: getUserSingle?.id,
+            data: {
+              ...getUserSingle,
+              cart: [
+                ...getUserSingle?.cart,
+                {
+                  ...singleProducts,
+                  quantity: 1,
+                  userName: userToken,
+                  count: 1,
+                },
+              ],
+            },
+          })
+        );
+
+        setCartData(getUserSingle?.cart);
+
+        setClicked(false);
 
         setTimeout(() => {
           setAlert(true);
@@ -166,25 +178,24 @@ const Homes = ({ theme, checkedIn }: any) => {
           clearTimeout(time);
         }, 500);
       }
-
-      // setCartData(getUserSingle?.cart);
-
-      console.log(
-        "user ======> ========> ",
-        user,
-        singleProducts,
-        singleProduct
-      );
     } else {
       router.push("/usersignup");
     }
   };
 
-  // const fetchSingleProductandcart = () => {};
+  useEffect(() => {
+    setUsers(user);
+  }, [user]);
 
-  // useEffect(() => {
-  //   fetchSingleProductandcart();
-  // }, [cartData]);
+  useEffect(() => {
+    // const getUserSingle: any = user?.find(
+    // (e: any) => e?.userName === userToken
+    // );
+    if (clicked) {
+      fetchSingleProductandcart();
+      // setCartData(getUserSingle?.cart);
+    }
+  }, [clicked]);
 
   const handleDeleteProduct = async (id: any) => {
     // await axios.delete(`http://localhost:3001/product/${id}`);
@@ -194,30 +205,32 @@ const Homes = ({ theme, checkedIn }: any) => {
   };
 
   const cartProductData = () => {
-    if (userToken) {
-      const getUserSingle = user?.find((e: any) => e?.userName === userToken);
-      setCartData(getUserSingle?.cart);
-    }
+    console.log("LOADEDDDDDDD++++++++===");
+
+    const getUserSingle: any = users?.find(
+      (e: any) => e?.userName === userToken
+    );
+    console.log("LOADEDDDDDDD++++++++===111");
+
+    setCartData(getUserSingle?.cart);
+    console.log("LOADEDDDDDDD++++++++===2222", getUserSingle, users);
+    // if (userToken) {
+    // }
   };
 
   useEffect(() => {
-    setSingleProducts(singleProduct);
-    console.log("singlePrduybfvhb========>", singleProduct);
-  }, [singleProduct]);
+    dispatch(productDataAction());
+    cartProductData();
+  }, [clicked]);
 
   useEffect(() => {
     setProduct(products);
-    cartProductData();
-  }, [products, cartData]);
-
-  useEffect(() => {
-    setSingleProducts(singleProduct);
-  }, [singleProduct]);
+  }, [products]);
 
   useEffect(() => {
     dispatch(getUserAction());
-    dispatch(productDataAction());
-  }, [userToken, singleProduct]);
+    cartProductData();
+  }, []);
 
   useEffect(() => {
     const afterloginRoute = async () => {
@@ -235,8 +248,8 @@ const Homes = ({ theme, checkedIn }: any) => {
   console.log(
     "productData=================== >>>>>>",
     products,
-    singleProducts,
-    user,
+    singleProduct,
+    users,
     cartData
   );
 

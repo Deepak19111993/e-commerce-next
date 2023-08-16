@@ -3,8 +3,9 @@ import React, { useEffect, useState } from "react";
 import Header from "../Header/Header";
 import axios from "axios";
 import { usePathname } from "next/navigation";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
+import { getUserAction } from "@/redux/userData/action";
 
 const MainComp = ({ children }: any) => {
   const [cartData, setCartData] = useState([]);
@@ -12,6 +13,8 @@ const MainComp = ({ children }: any) => {
   const routerPath = usePathname();
 
   const adminUrl = routerPath?.split("/").at(1);
+
+  const dispatch = useDispatch();
 
   // const [loader, setLoader] = useState(false);
 
@@ -94,7 +97,7 @@ const MainComp = ({ children }: any) => {
   }, [theme]);
 
   useEffect(() => {
-    // dispatch(getUserAction());
+    dispatch(getUserAction());
     // dispatch(productDataAction());
     cartProductData();
   }, []);

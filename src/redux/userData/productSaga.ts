@@ -115,28 +115,28 @@ function* fetchSingleProductSaga(action: any) {
       (e: any) => e?.userName === localStorage.getItem("user-token")
     );
 
-    if (
-      !getUserSingle?.cart?.map((e: any) => e?.id).includes(action.payload.id)
-    ) {
-      yield put({
-        type: PUT_USER_REQUEST,
-        payload: {
-          id: getUserSingle?.id,
-          data: {
-            ...getUserSingle,
-            cart: [
-              ...getUserSingle?.cart,
-              {
-                ...singleProductData,
-                quantity: 1,
-                userName: localStorage.getItem("user-token"),
-                count: 1,
-              },
-            ],
-          },
-        },
-      });
-    }
+    // if (
+    //   !getUserSingle?.cart?.map((e: any) => e?.id).includes(action.payload.id)
+    // ) {
+    //   yield put({
+    //     type: PUT_USER_REQUEST,
+    //     payload: {
+    //       id: getUserSingle?.id,
+    //       data: {
+    //         ...getUserSingle,
+    //         cart: [
+    //           ...getUserSingle?.cart,
+    //           {
+    //             ...singleProductData,
+    //             quantity: 1,
+    //             userName: localStorage.getItem("user-token"),
+    //             count: 1,
+    //           },
+    //         ],
+    //       },
+    //     },
+    //   });
+    // }
   } catch (e: any) {
     yield put({ type: SINGLE_PRODUCTDATA_FAILED, error: e.message });
   }
