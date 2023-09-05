@@ -14,9 +14,9 @@ import {
   SINGLE_PRODUCTDATA_FAILED,
   SINGLE_PRODUCTDATA_REQUEST,
   SINGLE_PRODUCTDATA_SUCCESS,
-  USER_FAILED,
-  USER_REQUEST,
-  USER_SUCCESS,
+  // USER_FAILED,
+  // USER_REQUEST,
+  // USER_SUCCESS,
 } from "./action";
 import axios from "axios";
 
@@ -63,8 +63,6 @@ function* getUserSaga(action: any) {
 }
 
 function* postUserSaga(action: any) {
-  console.log("userPOST", action.payload);
-
   yield call(postUser, action.payload);
   // try {
   //    yield put({type: POST_USER_SUCCESS});
@@ -74,8 +72,6 @@ function* postUserSaga(action: any) {
 }
 
 function* putUserSaga(action: any) {
-  console.log("putUser====Request", action.payload);
-
   yield call(putUser, action.payload);
   // try {
   //    yield put({type: POST_USER_SUCCESS});
@@ -103,17 +99,16 @@ function* postProductSaga(action: any) {
 }
 
 function* fetchSingleProductSaga(action: any) {
-  console.log("action.payload", action.payload);
-
   try {
-    const singleProductData = yield call(getSingleProduct, action.payload.id);
+    const singleProductData = yield call(getSingleProduct, action.payload);
     yield put({
       type: SINGLE_PRODUCTDATA_SUCCESS,
       singleProduct: singleProductData,
     });
-    const getUserSingle = action.payload.user?.find(
-      (e: any) => e?.userName === localStorage.getItem("user-token")
-    );
+
+    // const getUserSingle = action.payload.user?.find(
+    //   (e: any) => e?.userName === localStorage.getItem("user-token")
+    // );
 
     // if (
     //   !getUserSingle?.cart?.map((e: any) => e?.id).includes(action.payload.id)
@@ -143,9 +138,9 @@ function* fetchSingleProductSaga(action: any) {
 }
 
 function* productSaga() {
+  yield takeEvery(PUT_USER_REQUEST, putUserSaga);
   yield takeEvery(GET_USER_REQUEST, getUserSaga);
   yield takeEvery(POST_USER_REQUEST, postUserSaga);
-  yield takeEvery(PUT_USER_REQUEST, putUserSaga);
   yield takeEvery(PRODUCTDATA_REQUEST, fetchProductSaga);
   yield takeEvery(POST_PRODUCT_REQUEST, postProductSaga);
   yield takeEvery(SINGLE_PRODUCTDATA_REQUEST, fetchSingleProductSaga);

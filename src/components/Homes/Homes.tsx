@@ -25,9 +25,7 @@ const Homes = ({ theme, checkedIn }: any) => {
     (state: any) => state?.counterReducer
   );
 
-  const [users, setUsers] = useState([]);
-
-  console.log("userefkvnj ============", users);
+  const [users, setUsers] = useState<any[]>([]);
 
   const dispatch = useDispatch();
 
@@ -61,6 +59,7 @@ const Homes = ({ theme, checkedIn }: any) => {
   // const [theme, setTheme] = useState('light');
 
   // const [checkedIn, setCheckedIn] = useState(null);
+
   const [clicked, setClicked] = useState(false);
 
   let userToken: any;
@@ -130,107 +129,40 @@ const Homes = ({ theme, checkedIn }: any) => {
     }, 500);
   };
 
-  const handleProductClick = (id: any) => {
-    let singleProductData = product.filter((e: any) => e?.id === id);
-
-    setSingleProducts(singleProductData[0]);
-
-    setProductId(id);
-
-    setClicked(true);
-  };
-
-  const fetchSingleProductandcart = () => {
-    if (userToken) {
-      const getUserSingle: any = users?.find(
-        (e: any) => e?.userName === userToken
-      );
-
-      if (!getUserSingle?.cart?.map((e: any) => e?.id).includes(productId)) {
-        dispatch(
-          putUserAction({
-            id: getUserSingle?.id,
-            data: {
-              ...getUserSingle,
-              cart: [
-                ...getUserSingle?.cart,
-                {
-                  ...singleProducts,
-                  quantity: 1,
-                  userName: userToken,
-                  count: 1,
-                },
-              ],
-            },
-          })
-        );
-
-        setCartData(getUserSingle?.cart);
-
-        setClicked(false);
-
-        setTimeout(() => {
-          setAlert(true);
-          const time = setTimeout(() => {
-            setAlert(false);
-          }, 3000);
-
-          clearTimeout(time);
-        }, 500);
-      }
-    } else {
-      router.push("/usersignup");
-    }
-  };
-
-  useEffect(() => {
-    setUsers(user);
-  }, [user]);
-
-  useEffect(() => {
-    // const getUserSingle: any = user?.find(
-    // (e: any) => e?.userName === userToken
-    // );
-    if (clicked) {
-      fetchSingleProductandcart();
-      // setCartData(getUserSingle?.cart);
-    }
-  }, [clicked]);
-
-  const handleDeleteProduct = async (id: any) => {
-    // await axios.delete(`http://localhost:3001/product/${id}`);
-    // const deletedProduct = products?.map((e: any) => e?.id !== id);
-    // setProduct(deletedProduct);
-    // dispatch(deltaAction(!delta));
-  };
-
-  const cartProductData = () => {
-    console.log("LOADEDDDDDDD++++++++===");
-
+  const cartProductData = (users: any[]) => {
     const getUserSingle: any = users?.find(
       (e: any) => e?.userName === userToken
     );
-    console.log("LOADEDDDDDDD++++++++===111");
 
     setCartData(getUserSingle?.cart);
-    console.log("LOADEDDDDDDD++++++++===2222", getUserSingle, users);
-    // if (userToken) {
-    // }
+  };
+
+  const handleProductClick = (id: any) => {
+    setClicked(true);
+    setProductId(id);
+    dispatch(singleProductDataAction(id));
+    setClicked(false);
   };
 
   useEffect(() => {
-    dispatch(productDataAction());
-    cartProductData();
-  }, [clicked]);
-
-  useEffect(() => {
-    setProduct(products);
-  }, [products]);
-
-  useEffect(() => {
+    // setProduct([...products]);
     dispatch(getUserAction());
-    cartProductData();
+    dispatch(productDataAction());
+    setUsers([...user]);
   }, []);
+
+  useEffect(() => {
+    // setProduct(products);
+    cartProductData(user);
+    setSingleProducts(singleProduct);
+  }, [user, productId]);
+
+  // const handleDeleteProduct = async (id: any) => {
+  //   await axios.delete(`http://localhost:3001/product/${id}`);
+  //   const deletedProduct = products?.map((e: any) => e?.id !== id);
+  //   setProduct(deletedProduct);
+  //   dispatch(deltaAction(!delta));
+  // };
 
   useEffect(() => {
     const afterloginRoute = async () => {
@@ -245,6 +177,61 @@ const Homes = ({ theme, checkedIn }: any) => {
     afterloginRoute();
   }, [login_key, userToken]);
 
+  useEffect(() => {
+    console.log("productId", productId);
+
+    if (userToken) {
+      const getUserSingle: any = users?.find(
+        (e: any) => e?.userName === userToken
+      );
+
+      console.log("getUserSingle", getUserSingle, users);
+
+      if (getUserSingle) {
+        console.log("getUserSingle=-=-=-", getUserSingle, users);
+        let cartDataLatest: any = [];
+
+        if (getUserSingle.cart) {
+          // Spread the existing cart items
+          cartDataLatest = [...getUserSingle.cart];
+        }
+
+        // Add the new item to cartData
+        cartDataLatest.push({
+          ...singleProducts,
+          quantity: 1,
+          userName: userToken,
+          count: 1,
+        });
+
+        if (!cartDataLatest.map((e: any) => e?.id).includes(productId)) {
+          dispatch(
+            putUserAction({
+              id: getUserSingle.id,
+              data: {
+                ...getUserSingle,
+                cart: cartDataLatest,
+              },
+            })
+          );
+
+          setCartData(cartDataLatest);
+
+          setTimeout(() => {
+            setAlert(true);
+            const time = setTimeout(() => {
+              setAlert(false);
+            }, 3000);
+
+            clearTimeout(time);
+          }, 500);
+        }
+      }
+    } else {
+      router.push("/usersignup");
+    }
+  }, [productId, clicked]);
+
   console.log(
     "productData=================== >>>>>>",
     products,
@@ -256,16 +243,6 @@ const Homes = ({ theme, checkedIn }: any) => {
   return (
     <>
       {alert && <div className="alert">Add Successfully!</div>}
-      {/* <Header
-        cartData={cartData}
-        setCartData={setCartData}
-        setLoader={setLoader}
-        loader={loader}
-        handleTheme={handleTheme}
-        theme={theme}
-        setCheckedIn={setCheckedIn}
-        checkedIn={checkedIn}
-      /> */}
       <div className={`wrapper ${theme}`}>
         {userToken && adminUrl === "admin" && (
           <form onSubmit={handleSubmit}>
@@ -332,7 +309,7 @@ const Homes = ({ theme, checkedIn }: any) => {
         <div className="product-wrapper">
           {loader
             ? "Loader"
-            : product?.map((item: any) => (
+            : products?.map((item: any) => (
                 <div
                   key={item?.id}
                   className={`item ${
@@ -361,7 +338,9 @@ const Homes = ({ theme, checkedIn }: any) => {
                   )}
                   {adminUrl === "admin" && (
                     <div className="overlay">
-                      <button onClick={() => handleDeleteProduct(item?.id)}>
+                      <button
+                      // onClick={() => handleDeleteProduct(item?.id)}
+                      >
                         Delete
                       </button>
                     </div>
@@ -375,17 +354,3 @@ const Homes = ({ theme, checkedIn }: any) => {
 };
 
 export default Homes;
-
-// export const getServerSideProps = async () => {
-//   // const res = await fetch('http://localhost:3001/posts');
-
-//   // const data = await res.json();
-
-//   // console.log('sbvcbhb', data);
-
-//   return {
-//     props: {
-//       data: 'messagesed',
-//     },
-//   };
-// };
