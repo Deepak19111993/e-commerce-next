@@ -42,15 +42,9 @@ const Homes = ({ theme, checkedIn }: any) => {
     category: "",
   });
 
-  const [product, setProduct] = useState<any>([]);
-
   const [productId, setProductId] = useState(null);
 
-  const [singleProducts, setSingleProducts] = useState({});
-
   const [cartData, setCartData] = useState([]);
-
-  // const [loader, setLoader] = useState(false);
 
   const [alert, setAlert] = useState(false);
 
@@ -61,6 +55,8 @@ const Homes = ({ theme, checkedIn }: any) => {
   // const [checkedIn, setCheckedIn] = useState(null);
 
   const [clicked, setClicked] = useState(false);
+
+  const newSigleData = singleProduct;
 
   let userToken: any;
   let login_key: any;
@@ -97,7 +93,6 @@ const Homes = ({ theme, checkedIn }: any) => {
 
   const postProduct = async (singleData: any) => {
     dispatch(postProductAction(singleData));
-    // await axios.post("http://localhost:3001/product", singleData);
   };
 
   const handleSubmit = (e: any) => {
@@ -138,24 +133,19 @@ const Homes = ({ theme, checkedIn }: any) => {
   };
 
   const handleProductClick = (id: any) => {
-    setClicked(true);
-    setProductId(id);
     dispatch(singleProductDataAction(id));
-    setClicked(false);
+    setProductId(id);
   };
 
   useEffect(() => {
-    // setProduct([...products]);
     dispatch(getUserAction());
     dispatch(productDataAction());
-    setUsers([...user]);
   }, []);
 
   useEffect(() => {
-    // setProduct(products);
+    setUsers([...user]);
     cartProductData(user);
-    setSingleProducts(singleProduct);
-  }, [user, productId]);
+  }, [user, productId, clicked]);
 
   // const handleDeleteProduct = async (id: any) => {
   //   await axios.delete(`http://localhost:3001/product/${id}`);
@@ -178,36 +168,31 @@ const Homes = ({ theme, checkedIn }: any) => {
   }, [login_key, userToken]);
 
   useEffect(() => {
-    console.log("productId", productId);
-
     if (userToken) {
       const getUserSingle: any = users?.find(
         (e: any) => e?.userName === userToken
       );
 
-      console.log("getUserSingle", getUserSingle, users);
-
       if (getUserSingle) {
-        console.log("getUserSingle=-=-=-", getUserSingle, users);
         let cartDataLatest: any = [];
 
         if (getUserSingle.cart) {
           // Spread the existing cart items
-          cartDataLatest = [...getUserSingle.cart];
+          cartDataLatest = [
+            ...getUserSingle.cart,
+            {
+              ...newSigleData,
+              quantity: 1,
+              userName: userToken,
+              count: 1,
+            },
+          ];
         }
 
-        // Add the new item to cartData
-        cartDataLatest.push({
-          ...singleProducts,
-          quantity: 1,
-          userName: userToken,
-          count: 1,
-        });
-
-        if (!cartDataLatest.map((e: any) => e?.id).includes(productId)) {
+        if (!getUserSingle.cart.map((e: any) => e?.id).includes(productId)) {
           dispatch(
             putUserAction({
-              id: getUserSingle.id,
+              id: getUserSingle?.id,
               data: {
                 ...getUserSingle,
                 cart: cartDataLatest,
@@ -230,14 +215,14 @@ const Homes = ({ theme, checkedIn }: any) => {
     } else {
       router.push("/usersignup");
     }
-  }, [productId, clicked]);
+  }, [productId, singleProduct]);
 
   console.log(
-    "productData=================== >>>>>>",
-    products,
-    singleProduct,
-    users,
-    cartData
+    // "productData=================== >>>>>>",
+    // products,
+    singleProduct
+    // users,
+    // cartData
   );
 
   return (

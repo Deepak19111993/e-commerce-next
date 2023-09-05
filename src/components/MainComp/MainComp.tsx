@@ -47,7 +47,6 @@ const MainComp = ({ children }: any) => {
       )[0];
       let indexData = user?.filter((e: any) => e?.userName === userToken)[0]
         ?.id;
-      console.log("cartProductData();", getUserSingle, user);
 
       setCartData(getUserSingle?.cart);
     }

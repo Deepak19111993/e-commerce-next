@@ -32,6 +32,8 @@ const postUser = async (data: any) => {
 };
 
 const putUser = async ({ id, data }: any) => {
+  console.log("fhjvbjfbvjbf", { id, data });
+
   await axios.put(`${apiUrl}/signup/${id}`, data);
 };
 
@@ -72,7 +74,13 @@ function* postUserSaga(action: any) {
 }
 
 function* putUserSaga(action: any) {
-  yield call(putUser, action.payload);
+  console.log("sjfvbjfbvjb,", action.payload);
+
+  try {
+    yield call(putUser, action.payload);
+  } catch (err) {
+    console.log(err);
+  }
   // try {
   //    yield put({type: POST_USER_SUCCESS});
   // } catch (e:any) {
