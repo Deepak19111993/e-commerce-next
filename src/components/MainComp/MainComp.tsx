@@ -40,41 +40,6 @@ const MainComp = ({ children }: any) => {
     login_key = localStorage.getItem("login-key");
   }
 
-  const cartProductData = async () => {
-    if (userToken) {
-      const getUserSingle = user?.filter(
-        (e: any) => e?.userName === userToken
-      )[0];
-      let indexData = user?.filter((e: any) => e?.userName === userToken)[0]
-        ?.id;
-
-      setCartData(getUserSingle?.cart);
-    }
-  };
-
-  useEffect(() => {
-    // const cartProductData = async () => {
-    //   if (userToken) {
-    //     const singleUserCartData = await axios
-    //       .get("http://localhost:3001/signup")
-    //       .then((res) => res?.data);
-
-    //     let indexData = singleUserCartData?.filter(
-    //       (e: any) => e?.userName === userToken
-    //     )[0]?.id;
-
-    //     await axios
-    //       .get(`http://localhost:3001/signup/${indexData}`)
-    //       .then((res) => {
-    //         if (res) {
-    //           setCartData(res?.data?.cart);
-    //         }
-    //       });
-    //   }
-    // };
-    cartProductData();
-  }, [loader, userToken]);
-
   const handleTheme = (e: any) => {
     setCheckedIn(e.target.checked);
     if (e.target.checked === true) {
@@ -83,6 +48,10 @@ const MainComp = ({ children }: any) => {
       setTheme("light");
     }
   };
+
+  useEffect(() => {
+    dispatch(getUserAction());
+  }, [cartData, singleProduct]);
 
   useEffect(() => {
     const body = document.querySelector("body");
@@ -97,14 +66,12 @@ const MainComp = ({ children }: any) => {
 
   useEffect(() => {
     dispatch(getUserAction());
-    // dispatch(productDataAction());
-    cartProductData();
   }, []);
 
   return (
     <>
       <Header
-        cartData={cartData}
+        cartData={user?.find((e: any) => e?.userName === userToken)?.cart}
         setCartData={setCartData}
         // setLoader={setLoader}
         loader={loader}

@@ -1,4 +1,7 @@
 import {
+  DELETE_PRODUCT_FAILED,
+  DELETE_PRODUCT_REQUEST,
+  DELETE_PRODUCT_SUCCESS,
   GET_USER_FAILED,
   GET_USER_REQUEST,
   GET_USER_SUCCESS,
@@ -41,6 +44,17 @@ const counterReducer = (state = initialState, action: any) => {
     case PRODUCTDATA_SUCCESS:
       return { ...state, loader: false, products: action.productData };
     case PRODUCTDATA_FAILED:
+    case DELETE_PRODUCT_REQUEST:
+      return { ...state, loader: true };
+    case DELETE_PRODUCT_SUCCESS:
+      return {
+        ...state,
+        loader: false,
+        products: state?.products.filter(
+          (e: any) => e?.id !== action?.deleteId
+        ),
+      };
+    case DELETE_PRODUCT_FAILED:
       return { ...state, loader: false, error: action.error };
     case SINGLE_PRODUCTDATA_REQUEST:
       return { ...state, loader: true };

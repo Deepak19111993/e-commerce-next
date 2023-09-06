@@ -1,5 +1,8 @@
 import { call, put, takeEvery } from "redux-saga/effects";
 import {
+  DELETE_PRODUCT_FAILED,
+  DELETE_PRODUCT_REQUEST,
+  DELETE_PRODUCT_SUCCESS,
   GET_USER_FAILED,
   GET_USER_REQUEST,
   GET_USER_SUCCESS,
@@ -32,8 +35,6 @@ const postUser = async (data: any) => {
 };
 
 const putUser = async ({ id, data }: any) => {
-  console.log("fhjvbjfbvjbf", { id, data });
-
   await axios.put(`${apiUrl}/signup/${id}`, data);
 };
 
@@ -46,6 +47,10 @@ const getProduct = async () => {
 
 const postProduct = async (data: any) => {
   await axios.post(`${apiUrl}/product`, data);
+};
+
+const deleteProduct = async (id: any) => {
+  await axios.delete(`${apiUrl}/product/${id}`);
 };
 
 const getSingleProduct = async (id: any) => {
@@ -74,8 +79,6 @@ function* postUserSaga(action: any) {
 }
 
 function* putUserSaga(action: any) {
-  console.log("sjfvbjfbvjb,", action.payload);
-
   try {
     yield call(putUser, action.payload);
   } catch (err) {
@@ -104,6 +107,18 @@ function* postProductSaga(action: any) {
   // } catch (e:any) {
   //    yield put({type: PRODUCTDATA_FAILED, error: e.message});
   // }
+}
+
+function* deleteProductSaga(action: any) {
+  try {
+    yield call(deleteProduct, action.payload);
+    yield put({
+      type: DELETE_PRODUCT_SUCCESS,
+      deleteId: action.payload,
+    });
+  } catch (e: any) {
+    yield put({ type: DELETE_PRODUCT_FAILED, error: e.message });
+  }
 }
 
 function* fetchSingleProductSaga(action: any) {
@@ -151,6 +166,7 @@ function* productSaga() {
   yield takeEvery(POST_USER_REQUEST, postUserSaga);
   yield takeEvery(PRODUCTDATA_REQUEST, fetchProductSaga);
   yield takeEvery(POST_PRODUCT_REQUEST, postProductSaga);
+  yield takeEvery(DELETE_PRODUCT_REQUEST, deleteProductSaga);
   yield takeEvery(SINGLE_PRODUCTDATA_REQUEST, fetchSingleProductSaga);
 }
 

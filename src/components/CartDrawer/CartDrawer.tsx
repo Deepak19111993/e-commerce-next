@@ -5,6 +5,8 @@ import Image from "next/image";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
+import { log } from "console";
+import { putUserAction } from "@/redux/userData/action";
 
 const CartDrawer = ({
   cartData,
@@ -12,11 +14,10 @@ const CartDrawer = ({
   openDrawer,
   setOpenDrawer,
   setLoader,
-  loader,
   onClickOutside,
   theme,
 }: any) => {
-  // const userToken = localStorage.getItem('user-token');
+  const { user } = useSelector((state: any) => state?.counterReducer);
 
   let userToken: any;
   let login_key: any;
@@ -34,80 +35,69 @@ const CartDrawer = ({
 
   const dispatch = useDispatch();
 
-  const delta = useSelector((state: any) => state?.counterReducer);
-
   const decrease = async (id: any) => {
-    setLoader(true);
-    const singleUserCartData = await axios
-      .get("http://localhost:3001/signup")
-      .then((res) => res?.data);
-
-    let indexData = singleUserCartData?.filter(
+    const getUserSingle: any = user?.find(
       (e: any) => e?.userName === userToken
-    )[0]?.id;
+    );
 
-    const getUserSingle = await axios
-      .get(`http://localhost:3001/signup/${indexData}`)
-      .then((res) => res?.data);
+    const currentCartItem = getUserSingle?.cart.map((e: any) =>
+      e?.id === id
+        ? { ...e, quantity: e?.quantity <= 1 ? 1 : e?.quantity - 1 }
+        : { ...e }
+    );
 
-    await axios.put(`http://localhost:3001/signup/${indexData}`, {
-      ...getUserSingle,
-      cart:
-        // ...getUserSingle?.cart,
-        getUserSingle?.cart.map((e: any) =>
-          e?.id === id
-            ? { ...e, quantity: e?.quantity <= 1 ? 1 : e?.quantity - 1 }
-            : { ...e }
-        ),
-    });
-    setLoader(false);
+    dispatch(
+      putUserAction({
+        id: getUserSingle?.id,
+        data: {
+          ...getUserSingle,
+          cart: currentCartItem,
+        },
+      })
+    );
+    setCartData(getUserSingle?.cart);
   };
 
   const increase = async (id: any) => {
-    setLoader(true);
-    const singleUserCartData = await axios
-      .get("http://localhost:3001/signup")
-      .then((res) => res?.data);
-
-    let indexData = singleUserCartData?.filter(
+    const getUserSingle: any = user?.find(
       (e: any) => e?.userName === userToken
-    )[0]?.id;
+    );
 
-    const getUserSingle = await axios
-      .get(`http://localhost:3001/signup/${indexData}`)
-      .then((res) => res?.data);
+    const currentCartItems = getUserSingle?.cart.map((e: any) =>
+      e?.id === id ? { ...e, quantity: e?.quantity + 1 } : { ...e }
+    );
 
-    await axios.put(`http://localhost:3001/signup/${indexData}`, {
-      ...getUserSingle,
-      cart:
-        // ...getUserSingle?.cart,
-        getUserSingle?.cart.map((e: any) =>
-          e?.id === id ? { ...e, quantity: e?.quantity + 1 } : { ...e }
-        ),
-    });
-    setLoader(false);
+    dispatch(
+      putUserAction({
+        id: getUserSingle?.id,
+        data: {
+          ...getUserSingle,
+          cart: currentCartItems,
+        },
+      })
+    );
+    setCartData(getUserSingle?.cart);
   };
 
-  const handleDelete = async (id: any) => {
-    setLoader(true);
-    const singleUserCartData = await axios
-      .get("http://localhost:3001/signup")
-      .then((res) => res?.data);
-
-    let indexData = singleUserCartData?.filter(
+  const handleDelete = (id: any) => {
+    const getUserSingle: any = user?.find(
       (e: any) => e?.userName === userToken
-    )[0]?.id;
+    );
 
-    const getUserSingle = await axios
-      .get(`http://localhost:3001/signup/${indexData}`)
-      .then((res) => res?.data);
+    const filteredCartData = getUserSingle?.cart.filter(
+      (el: any) => el?.id !== id
+    );
 
-    await axios.put(`http://localhost:3001/signup/${indexData}`, {
-      ...getUserSingle,
-      cart: getUserSingle?.cart.filter((e: any) => e?.id !== id),
-    });
-    setLoader(false);
-    // dispatch(deltaAction(!delta));
+    dispatch(
+      putUserAction({
+        id: getUserSingle?.id,
+        data: {
+          ...getUserSingle,
+          cart: filteredCartData,
+        },
+      })
+    );
+    setCartData(filteredCartData);
   };
 
   const getTotal = () => {

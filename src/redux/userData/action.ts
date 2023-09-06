@@ -6,6 +6,10 @@ export const POST_PRODUCT_REQUEST = "POST_PRODUCT_REQUEST";
 export const POST_PRODUCT_SUCCESS = "POST_PRODUCT_SUCCESS";
 export const POST_PRODUCT_FAILED = "POST_PRODUCT_FAILED";
 
+export const DELETE_PRODUCT_REQUEST = "DELETE_PRODUCT_REQUEST";
+export const DELETE_PRODUCT_SUCCESS = "DELETE_PRODUCT_SUCCESS";
+export const DELETE_PRODUCT_FAILED = "DELETE_PRODUCT_FAILED";
+
 export const GET_USER_REQUEST = "GET_USER_REQUEST";
 export const GET_USER_SUCCESS = "GET_USER_SUCCESS";
 export const GET_USER_FAILED = "GET_USER_FAILED";
@@ -46,6 +50,11 @@ export const productDataAction = () => ({
 
 export const postProductAction = (payload: any) => ({
   type: POST_PRODUCT_REQUEST,
+  payload,
+});
+
+export const deleteProductAction = (payload: any) => ({
+  type: DELETE_PRODUCT_REQUEST,
   payload,
 });
 

@@ -5,6 +5,7 @@ import axios from "axios";
 import Image from "next/image";
 // import { usePathname, useRouter } from 'next/navigation';
 import {
+  deleteProductAction,
   getUserAction,
   postProductAction,
   postUserAction,
@@ -147,12 +148,17 @@ const Homes = ({ theme, checkedIn }: any) => {
     cartProductData(user);
   }, [user, productId, clicked]);
 
-  // const handleDeleteProduct = async (id: any) => {
-  //   await axios.delete(`http://localhost:3001/product/${id}`);
-  //   const deletedProduct = products?.map((e: any) => e?.id !== id);
-  //   setProduct(deletedProduct);
-  //   dispatch(deltaAction(!delta));
-  // };
+  const handleDeleteProduct = (id: any) => {
+    dispatch(deleteProductAction(id));
+    // await axios.delete(`http://localhost:3001/product/${id}`);
+    // const deletedProduct = products?.map((e: any) => e?.id !== id);
+    // setProduct(deletedProduct);
+    // dispatch(productDataAction());
+  };
+
+  // useEffect(() => {
+  //   dispatch(productDataAction());
+  // }, [deleteProductAction]);
 
   useEffect(() => {
     const afterloginRoute = async () => {
@@ -216,14 +222,6 @@ const Homes = ({ theme, checkedIn }: any) => {
       router.push("/usersignup");
     }
   }, [productId, singleProduct]);
-
-  console.log(
-    // "productData=================== >>>>>>",
-    // products,
-    singleProduct
-    // users,
-    // cartData
-  );
 
   return (
     <>
@@ -323,9 +321,7 @@ const Homes = ({ theme, checkedIn }: any) => {
                   )}
                   {adminUrl === "admin" && (
                     <div className="overlay">
-                      <button
-                      // onClick={() => handleDeleteProduct(item?.id)}
-                      >
+                      <button onClick={() => handleDeleteProduct(item?.id)}>
                         Delete
                       </button>
                     </div>
